@@ -9,20 +9,24 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Toolbar } from "@/components/toolbar";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@clerk/clerk-react";
 
 interface DocumentIdPageProps {
   params: {
     documentId: Id<"documents">;
   };
-};
+}
 
-const DocumentIdPage = ({
-  params
-}: DocumentIdPageProps) => {
-  const Editor = useMemo(() => dynamic(() => import("@/components/editor"), { ssr: false }) ,[]);
+const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
+  const { user } = useUser();
+
+  const Editor = useMemo(
+    () => dynamic(() => import("@/components/editor"), { ssr: false }),
+    []
+  );
 
   const document = useQuery(api.documents.getById, {
-    documentId: params.documentId
+    documentId: params.documentId,
   });
 
   const update = useMutation(api.documents.update);
@@ -30,7 +34,7 @@ const DocumentIdPage = ({
   const onChange = (content: string) => {
     update({
       id: params.documentId,
-      content
+      content,
     });
   };
 
@@ -51,10 +55,10 @@ const DocumentIdPage = ({
   }
 
   if (document === null) {
-    return <div>Not found</div>
+    return <div>Not found</div>;
   }
 
-  return ( 
+  return (
     <div className="pb-40">
       <Cover url={document.coverImage} />
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
@@ -62,10 +66,12 @@ const DocumentIdPage = ({
         <Editor
           onChange={onChange}
           initialContent={document.content}
+          username={user?.fullName || "Anonymous"}
+          room={document._id}
         />
       </div>
     </div>
-   );
-}
- 
+  );
+};
+
 export default DocumentIdPage;

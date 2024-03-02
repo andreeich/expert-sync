@@ -63,7 +63,6 @@ export const getSidebar = query({
     }
 
     const userId = identity.subject;
-    const userEmail = identity.email;
 
     const documents = await ctx.db
       .query("documents")
@@ -98,7 +97,7 @@ export const create = mutation({
       userId,
       isArchived: false,
       isPublished: false,
-      members: JSON.stringify([]),
+      members: [],
     });
 
     return document;
@@ -251,8 +250,12 @@ export const getById = query({
     }
 
     const userId = identity.subject;
+    const userEmail = identity.email;
 
-    if (document.userId !== userId) {
+    if (
+      document.userId !== userId &&
+      !document?.members?.includes(userEmail!)
+    ) {
       throw new Error("Unauthorized");
     }
 
@@ -276,19 +279,23 @@ export const update = mutation({
       throw new Error("Unauthenticated");
     }
 
-    const userId = identity.subject;
-
-    const { id, ...rest } = args;
-
     const existingDocument = await ctx.db.get(args.id);
 
     if (!existingDocument) {
       throw new Error("Not found");
     }
 
-    if (existingDocument.userId !== userId) {
+    const userId = identity.subject;
+    const userEmail = identity.email;
+
+    if (
+      existingDocument.userId !== userId &&
+      !existingDocument.members?.includes(userEmail!)
+    ) {
       throw new Error("Unauthorized");
     }
+
+    const { id, ...rest } = args;
 
     const document = await ctx.db.patch(args.id, {
       ...rest,
@@ -307,15 +314,19 @@ export const removeIcon = mutation({
       throw new Error("Unauthenticated");
     }
 
-    const userId = identity.subject;
-
     const existingDocument = await ctx.db.get(args.id);
 
     if (!existingDocument) {
       throw new Error("Not found");
     }
 
-    if (existingDocument.userId !== userId) {
+    const userId = identity.subject;
+    const userEmail = identity.email;
+
+    if (
+      existingDocument.userId !== userId &&
+      !existingDocument.members?.includes(userEmail!)
+    ) {
       throw new Error("Unauthorized");
     }
 
@@ -336,15 +347,19 @@ export const removeCoverImage = mutation({
       throw new Error("Unauthenticated");
     }
 
-    const userId = identity.subject;
-
     const existingDocument = await ctx.db.get(args.id);
 
     if (!existingDocument) {
       throw new Error("Not found");
     }
 
-    if (existingDocument.userId !== userId) {
+    const userId = identity.subject;
+    const userEmail = identity.email;
+
+    if (
+      existingDocument.userId !== userId &&
+      !existingDocument.members?.includes(userEmail!)
+    ) {
       throw new Error("Unauthorized");
     }
 
@@ -368,26 +383,31 @@ export const addMember = mutation({
     if (!identity) {
       throw new Error("Unauthenticated");
     }
-
-    const userId = identity.subject;
-
     const existingDocument = await ctx.db.get(args.id);
 
     if (!existingDocument) {
       throw new Error("Not found");
     }
 
-    // parse members json array string to an array
-    const members = JSON.parse(existingDocument.members || "[]");
+    const userId = identity.subject;
+    const userEmail = identity.email;
+
+    if (
+      existingDocument.userId !== userId &&
+      !existingDocument.members?.includes(userEmail!)
+    ) {
+      throw new Error("Unauthorized");
+    }
+
     // check if the member is already in the members
-    if (members.includes(args.member)) {
+    if (existingDocument?.members?.includes(args.member)) {
       throw new Error("Already in the members");
     }
-    // if not add the member to the members
-    members.push(args.member);
 
     const document = await ctx.db.patch(args.id, {
-      members: JSON.stringify(members),
+      members: !!existingDocument?.members?.length
+        ? [...existingDocument.members, args.member]
+        : [args.member],
     });
 
     return document;
@@ -407,27 +427,33 @@ export const removeMember = mutation({
       throw new Error("Unauthenticated");
     }
 
-    const userId = identity.subject;
-
     const existingDocument = await ctx.db.get(args.id);
 
     if (!existingDocument) {
       throw new Error("Not found");
     }
 
-    // parse members json array string to an array
-    const members = JSON.parse(existingDocument.members || "[]");
+    const userId = identity.subject;
+    const userEmail = identity.email;
+
+    if (
+      existingDocument.userId !== userId &&
+      !existingDocument.members?.includes(userEmail!)
+    ) {
+      throw new Error("Unauthorized");
+    }
+
     // check if the member is not in the team
-    if (!members.includes(args.member)) {
+    if (!existingDocument?.members?.includes(args.member)) {
       throw new Error("Not in the team");
     }
     // if not add the member to the members
-    const newMembers = members.filter(
+    const newMembers = existingDocument?.members.filter(
       (member: string) => member !== args.member
     );
 
     const document = await ctx.db.patch(args.id, {
-      members: JSON.stringify(members),
+      members: newMembers,
     });
 
     return document;
@@ -442,21 +468,54 @@ export const getMembers = query({
     if (!identity) {
       throw new Error("Unauthenticated");
     }
-
-    const userId = identity.subject;
-
     const document = await ctx.db.get(args.documentId);
 
     if (!document) {
       throw new Error("Not found");
     }
 
-    if (document.userId !== userId) {
+    const userId = identity.subject;
+    const userEmail = identity.email;
+
+    if (document.userId !== userId && !document.members?.includes(userEmail!)) {
       throw new Error("Unauthorized");
     }
 
-    const members = JSON.parse(document.members || "[]");
+    return document.members;
+  },
+});
 
-    return members;
+// get documents by member
+export const getSharedSidebar = query({
+  args: {
+    parentDocument: v.optional(v.id("documents")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userEmail = identity.email;
+
+    if (!userEmail) {
+      return [];
+    }
+
+    const documents = await ctx.db
+      .query("documents")
+      .filter((q) => q.eq(q.field("parentDocument"), args.parentDocument))
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
+
+    const filteredDocuments = documents.filter((document) => {
+      if (document.members?.includes(userEmail)) {
+        return document;
+      }
+    });
+
+    return filteredDocuments;
   },
 });

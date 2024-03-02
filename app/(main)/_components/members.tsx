@@ -20,17 +20,20 @@ interface MembersProps {
 }
 
 export const Members = ({ initialData }: MembersProps) => {
-  const members = JSON.parse(initialData.members || "[]");
+  const members = initialData.members;
   // ref for the input
   const inputRef = useRef<HTMLInputElement>(null);
   const [newMember, setNewMember] = useState("");
   const [addingMember, setAddingMember] = useState(false);
 
   const addMember = useMutation(api.documents.addMember);
+  const removeMember = useMutation(api.documents.removeMember);
 
   const onAddNewMember = () => {
     if (newMember === "") return;
+
     setAddingMember(true);
+
     const promise = addMember({
       id: initialData._id,
       member: newMember,
@@ -43,6 +46,23 @@ export const Members = ({ initialData }: MembersProps) => {
     });
 
     setNewMember("");
+    setAddingMember(false);
+  };
+
+  const onRemoveMember = (member: string) => {
+    setAddingMember(true);
+
+    const promise = removeMember({
+      id: initialData._id,
+      member,
+    });
+
+    toast.promise(promise, {
+      loading: "Removing member...",
+      success: "Member removed",
+      error: "Failed to remove member.",
+    });
+
     setAddingMember(false);
   };
 
@@ -77,9 +97,9 @@ export const Members = ({ initialData }: MembersProps) => {
           >
             Add member
           </Button>
-          {members.length > 0 && (
+          {!!members?.length && (
             <ScrollArea className="w-full text-xs mt-4 h-[200px] rounded-sm border p-4">
-              {members.map((member: string) => (
+              {members?.map((member: string) => (
                 <div
                   key={member}
                   className="flex items-center gap-x-2 justify-between"
@@ -92,6 +112,7 @@ export const Members = ({ initialData }: MembersProps) => {
                     <Button
                       size="icon"
                       variant="ghost"
+                      onClick={(e) => onRemoveMember(member)}
                       className="inline-flex items-center justify-center w-8 h-8"
                     >
                       <Trash className="h-4 w-4" />

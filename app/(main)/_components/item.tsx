@@ -7,6 +7,7 @@ import {
   MoreHorizontal,
   Plus,
   Trash,
+  Unplug,
 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
@@ -36,6 +37,7 @@ interface ItemProps {
   label: string;
   onClick?: () => void;
   icon: LucideIcon;
+  shared?: boolean;
 }
 
 export const Item = ({
@@ -49,11 +51,13 @@ export const Item = ({
   level = 0,
   onExpand,
   expanded,
+  shared = false,
 }: ItemProps) => {
   const { user } = useUser();
   const router = useRouter();
   const create = useMutation(api.documents.create);
   const archive = useMutation(api.documents.archive);
+  const removeMember = useMutation(api.documents.removeMember);
 
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
@@ -65,6 +69,26 @@ export const Item = ({
       success: "Document moved to trash!",
       error: "Failed to archive document.",
     });
+  };
+
+  const onRemoveMember = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    if (!id) return;
+    // console.log(id, user?.emailAddresses[0].emailAddress!);
+    const promise = removeMember({
+      id,
+      member: user?.emailAddresses[0].emailAddress!,
+    });
+
+    toast.promise(promise, {
+      loading: "Disconnection...",
+      success: "Disconnected from document.",
+      error: "Failed to disconnect from document!.",
+    });
+
+    router.push("/documents");
   };
 
   const handleExpand = (
@@ -107,7 +131,7 @@ export const Item = ({
         active && "bg-primary/5 text-primary"
       )}
     >
-      {!!id && (
+      {!!id && !shared && (
         <div
           role="button"
           className="h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1"
@@ -127,7 +151,7 @@ export const Item = ({
           <span className="text-xs">⌘</span>K
         </kbd>
       )}
-      {!!id && (
+      {!!id && !shared && (
         <div className="ml-auto flex items-center gap-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} asChild>
@@ -161,6 +185,15 @@ export const Item = ({
           >
             <Plus className="h-5 w-5 sm:h-4 sm:w-4 text-muted-foreground" />
           </div>
+        </div>
+      )}
+      {shared && (
+        <div
+          role="button"
+          onClick={onRemoveMember}
+          className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+        >
+          <Unplug className="h-5 w-5 sm:h-4 sm:w-4 text-muted-foreground" />
         </div>
       )}
     </div>

@@ -30,6 +30,7 @@ import { Item } from "./item";
 import { DocumentList } from "./document-list";
 import { TrashBox } from "./trash-box";
 import { Navbar } from "./navbar";
+import { SharedDocumentList } from "./shared-document-list";
 
 export const Navigation = () => {
   const router = useRouter();
@@ -173,6 +174,12 @@ export const Navigation = () => {
               <TrashBox />
             </PopoverContent>
           </Popover>
+        </div>
+        <div className="mt-4 ml-3">
+          <h3 className="text-md font-medium text-muted-foreground mb-1">
+            Shared documents
+          </h3>
+          <SharedDocumentList />
         </div>
         <div
           onMouseDown={handleMouseDown}
