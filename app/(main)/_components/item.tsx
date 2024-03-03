@@ -71,11 +71,13 @@ export const Item = ({
     });
   };
 
+  // TODO: disconnection from document
   const onRemoveMember = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.stopPropagation();
     if (!id) return;
+    router.push("/documents");
     // console.log(id, user?.emailAddresses[0].emailAddress!);
     const promise = removeMember({
       id,
@@ -87,8 +89,6 @@ export const Item = ({
       success: "Disconnected from document.",
       error: "Failed to disconnect from document!.",
     });
-
-    router.push("/documents");
   };
 
   const handleExpand = (

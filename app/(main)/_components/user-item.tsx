@@ -62,7 +62,9 @@ export const UserItem = () => {
           asChild
           className="w-full cursor-pointer text-muted-foreground"
         >
-          <SignOutButton>Log out</SignOutButton>
+          <div>
+            <SignOutButton>Log out</SignOutButton>
+          </div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

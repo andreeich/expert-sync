@@ -1,16 +1,20 @@
 "use client";
 
-// TODO: collaboration work
-
 import { useTheme } from "next-themes";
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import {
+  BlockIdentifier,
+  BlockNoteEditor,
+  PartialBlock,
+} from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import "@blocknote/core/style.css";
 
 import { useEdgeStore } from "@/lib/edgestore";
 import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
+import useYProvider from "y-partykit/react";
 import { useDebounceCallback } from "usehooks-ts";
+import { useEffect, useMemo } from "react";
 interface EditorProps {
   onChange: (value: string) => void;
   initialContent?: string;
@@ -42,14 +46,13 @@ const Editor = ({
     return response.url;
   };
 
-  const doc = new Y.Doc();
+  const doc = useMemo(() => new Y.Doc(), []);
 
-  const provider = new YPartyKitProvider(
-    "blocknote-dev.yousefed.partykit.dev",
-    // use a unique name as a "room" for your application:
+  const provider = useYProvider({
+    host: "blocknote-dev.yousefed.partykit.dev",
     room,
-    doc
-  ); // setup a yjs provider (explained below)
+    doc,
+  });
   // an array of 15 colors to choose from:
   const colors = [
     "#FF5733", // Red
@@ -68,11 +71,12 @@ const Editor = ({
     "#99FF99", // Light Green
     "#9999FF", // Light Blue
   ];
+  const initialBlocks = initialContent
+    ? (JSON.parse(initialContent) as PartialBlock[])
+    : undefined;
   const editor: BlockNoteEditor = useBlockNote({
     editable,
-    initialContent: initialContent
-      ? (JSON.parse(initialContent) as PartialBlock[])
-      : undefined,
+    initialContent: initialBlocks,
     onEditorContentChange: (editor) => {
       onChangeDebounce(JSON.stringify(editor.topLevelBlocks, null, 2));
     },

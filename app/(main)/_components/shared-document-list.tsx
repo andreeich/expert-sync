@@ -13,14 +13,10 @@ import { Item } from "./item";
 
 interface DocumentListProps {
   parentDocumentId?: Id<"documents">;
-  level?: number;
   data?: Doc<"documents">[];
 }
 
-export const SharedDocumentList = ({
-  parentDocumentId,
-  level = 0,
-}: DocumentListProps) => {
+export const SharedDocumentList = ({ parentDocumentId }: DocumentListProps) => {
   const params = useParams();
   const router = useRouter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -43,13 +39,7 @@ export const SharedDocumentList = ({
   if (documents === undefined) {
     return (
       <>
-        <Item.Skeleton level={level} />
-        {level === 0 && (
-          <>
-            <Item.Skeleton level={level} />
-            <Item.Skeleton level={level} />
-          </>
-        )}
+        <Item.Skeleton level={0} />
       </>
     );
   }
@@ -57,13 +47,9 @@ export const SharedDocumentList = ({
   return (
     <>
       <p
-        style={{
-          paddingLeft: level ? `${level * 12 + 25}px` : undefined,
-        }}
         className={cn(
-          "hidden text-sm font-medium text-muted-foreground/80 min-h-[27px] py-2 sm:py-1 animate-in fade-in",
-          expanded && "last:block",
-          level === 0 && "hidden"
+          "hidden text-sm font-medium text-muted-foreground/80 min-h-[27px] px-3 py-2 sm:py-1 animate-in fade-in",
+          expanded && "last:block"
         )}
       >
         No documents inside

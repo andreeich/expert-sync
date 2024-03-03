@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import { z } from "zod";
 
 interface MembersProps {
   initialData: Doc<"documents">;
@@ -28,25 +29,37 @@ export const Members = ({ initialData }: MembersProps) => {
 
   const addMember = useMutation(api.documents.addMember);
   const removeMember = useMutation(api.documents.removeMember);
+  const inputSchema = z.coerce.string().email();
 
   const onAddNewMember = () => {
     if (newMember === "") return;
 
     setAddingMember(true);
 
-    const promise = addMember({
-      id: initialData._id,
-      member: newMember,
-    });
+    if (inputSchema.safeParse(newMember).success) {
+      const promise = addMember({
+        id: initialData._id,
+        member: newMember,
+      });
 
-    toast.promise(promise, {
-      loading: "Adding member...",
-      success: "Member added",
-      error: "Failed to add member.",
-    });
+      toast.promise(promise, {
+        loading: "Adding member...",
+        success: "Member added",
+        error: "Failed to add member.",
+      });
 
-    setNewMember("");
-    setAddingMember(false);
+      setNewMember("");
+      setAddingMember(false);
+    } else {
+      toast.error("Invalid email address.");
+      setAddingMember(false);
+      const classes = ["ring-2", "ring-red-500/25"];
+      inputRef.current?.classList.add(...classes);
+
+      setTimeout(() => {
+        inputRef.current?.classList.remove(...classes);
+      }, 500);
+    }
   };
 
   const onRemoveMember = (member: string) => {
@@ -85,9 +98,9 @@ export const Members = ({ initialData }: MembersProps) => {
           <Input
             ref={inputRef}
             value={newMember}
-            placeholder="Email or username"
+            placeholder="Email address"
             onChange={(e) => setNewMember(e.target.value)}
-            className="h-7 px-2 focus-visible:ring-transparent mb-2 text-xs w-full"
+            className="h-7 px-2 focus-visible:ring-transparent mb-2 text-xs w-full transition-all"
           ></Input>
           <Button
             className="w-full text-xs"
@@ -98,28 +111,30 @@ export const Members = ({ initialData }: MembersProps) => {
             Add member
           </Button>
           {!!members?.length && (
-            <ScrollArea className="w-full text-xs mt-4 h-[200px] rounded-sm border p-4">
-              {members?.map((member: string) => (
-                <div
-                  key={member}
-                  className="flex items-center gap-x-2 justify-between"
-                >
-                  <div>
-                    <Users className="h-4 w-4" />
-                    <p>{member}</p>
+            <ScrollArea className="w-full text-xs mt-4 h-[200px] rounded-sm border">
+              <div className="px-3 space-y-2 py-2">
+                {members?.map((member: string) => (
+                  <div
+                    key={member}
+                    className="flex items-center gap-x-2 justify-between py-1 w-full"
+                  >
+                    <div>
+                      <Users className="h-4 w-4" />
+                      <p className="truncate w-[185px]">{member}</p>
+                    </div>
+                    <div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={(e) => onRemoveMember(member)}
+                        className="inline-flex items-center justify-center w-8 h-8"
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={(e) => onRemoveMember(member)}
-                      className="inline-flex items-center justify-center w-8 h-8"
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </ScrollArea>
           )}
         </div>

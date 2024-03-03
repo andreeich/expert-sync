@@ -175,8 +175,8 @@ export const Navigation = () => {
             </PopoverContent>
           </Popover>
         </div>
-        <div className="mt-4 ml-3">
-          <h3 className="text-md font-medium text-muted-foreground mb-1">
+        <div className="mt-4">
+          <h3 className="ml-3 text-md font-medium text-muted-foreground mb-1">
             Shared documents
           </h3>
           <SharedDocumentList />

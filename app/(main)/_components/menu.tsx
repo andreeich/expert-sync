@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/clerk-react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { toast } from "sonner";
-import { MoreHorizontal, Trash } from "lucide-react";
+import { MoreHorizontal, Trash, Unplug } from "lucide-react";
 
 import { Id } from "@/convex/_generated/dataModel";
 import {
@@ -27,6 +27,7 @@ export const Menu = ({ documentId }: MenuProps) => {
   const { user } = useUser();
 
   const archive = useMutation(api.documents.archive);
+  const removeMember = useMutation(api.documents.removeMember);
 
   const onArchive = () => {
     const promise = archive({ id: documentId });
@@ -39,6 +40,31 @@ export const Menu = ({ documentId }: MenuProps) => {
 
     router.push("/documents");
   };
+
+  const onRemoveMember = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    if (!documentId) return;
+    router.push("/documents");
+    // console.log(id, user?.emailAddresses[0].emailAddress!);
+    const promise = removeMember({
+      id: documentId,
+      member: user?.emailAddresses[0].emailAddress!,
+    });
+
+    toast.promise(promise, {
+      loading: "Disconnection...",
+      success: "Disconnected from document.",
+      error: "Failed to disconnect from document!.",
+    });
+  };
+
+  const document = useQuery(api.documents.getById, {
+    documentId,
+  });
+
+  const isOwner = document?.userId === user?.id;
 
   return (
     <DropdownMenu>
@@ -53,10 +79,18 @@ export const Menu = ({ documentId }: MenuProps) => {
         alignOffset={8}
         forceMount
       >
-        <DropdownMenuItem onClick={onArchive}>
-          <Trash className="h-4 w-4 mr-2" />
-          Delete
-        </DropdownMenuItem>
+        {isOwner && (
+          <DropdownMenuItem onClick={onArchive}>
+            <Trash className="h-4 w-4 mr-2" />
+            Delete
+          </DropdownMenuItem>
+        )}
+        {!isOwner && (
+          <DropdownMenuItem onClick={onRemoveMember}>
+            <Unplug className="h-4 w-4 mr-2" />
+            Disconnect
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <div className="text-xs text-muted-foreground p-2">
           Last edited by: {user?.fullName}
