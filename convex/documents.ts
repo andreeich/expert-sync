@@ -104,6 +104,92 @@ export const create = mutation({
   },
 });
 
+export const createWithTemplate = mutation({
+  args: {
+    title: v.string(),
+    parentDocument: v.optional(v.id("documents")),
+    template: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+
+    let content: string | undefined = undefined;
+    switch (args.template) {
+      case "test":
+        content = `[
+          {
+            "id": "initialBlockId",
+            "type": "heading",
+            "props": {
+              "textColor": "default",
+              "backgroundColor": "default",
+              "textAlignment": "left",
+              "level": 1
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Test 1",
+                "styles": {}
+              }
+            ],
+            "children": []
+          },
+          {
+            "id": "bed3a06e-5b8e-4b85-99b8-9bd851a082ba",
+            "type": "heading",
+            "props": {
+              "textColor": "default",
+              "backgroundColor": "default",
+              "textAlignment": "left",
+              "level": 2
+            },
+            "content": [
+              {
+                "type": "text",
+                "text": "Test 2",
+                "styles": {}
+              }
+            ],
+            "children": []
+          },
+          {
+            "id": "5821d9cf-0c9e-4b8e-8c58-e764afca9a7d",
+            "type": "paragraph",
+            "props": {
+              "textColor": "default",
+              "backgroundColor": "default",
+              "textAlignment": "left"
+            },
+            "content": [],
+            "children": []
+          }
+        ]`;
+        break;
+      default:
+        content = undefined;
+    }
+
+    const document = await ctx.db.insert("documents", {
+      title: args.title,
+      parentDocument: args.parentDocument,
+      userId,
+      isArchived: false,
+      isPublished: false,
+      members: [],
+      content,
+    });
+
+    return document;
+  },
+});
+
 export const getTrash = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -487,9 +573,6 @@ export const getMembers = query({
 
 // get documents by member
 export const getSharedSidebar = query({
-  args: {
-    parentDocument: v.optional(v.id("documents")),
-  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -505,7 +588,6 @@ export const getSharedSidebar = query({
 
     const documents = await ctx.db
       .query("documents")
-      .filter((q) => q.eq(q.field("parentDocument"), args.parentDocument))
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .collect();

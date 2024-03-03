@@ -9,14 +9,20 @@ import { useRouter } from "next/navigation";
 
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import { TemplateContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { TemplateMenu } from "../../_components/templateMenu";
 
 const DocumentsPage = () => {
   const router = useRouter();
   const { user } = useUser();
-  const create = useMutation(api.documents.create);
+  const create = useMutation(api.documents.createWithTemplate);
 
-  const onCreate = () => {
-    const promise = create({ title: "Untitled" }).then((documentId) =>
+  const onCreate = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    template?: string
+  ) => {
+    event.stopPropagation();
+    const promise = create({ title: "Untitled", template }).then((documentId) =>
       router.push(`/documents/${documentId}`)
     );
 
@@ -46,10 +52,16 @@ const DocumentsPage = () => {
       <h2 className="text-lg font-medium">
         Welcome to {user?.firstName}&apos;s Documents
       </h2>
-      <Button onClick={onCreate}>
+      <TemplateMenu onCreate={onCreate}>
+        <Button>
+          <PlusCircle className="h-4 w-4 mr-2" />
+          Create a document
+        </Button>
+      </TemplateMenu>
+      {/* <Button onClick={onCreate}>
         <PlusCircle className="h-4 w-4 mr-2" />
         Create a document
-      </Button>
+      </Button> */}
     </div>
   );
 };

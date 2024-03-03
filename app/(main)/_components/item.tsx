@@ -25,6 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { TemplateMenu } from "./templateMenu";
 
 interface ItemProps {
   id?: Id<"documents">;
@@ -55,7 +56,7 @@ export const Item = ({
 }: ItemProps) => {
   const { user } = useUser();
   const router = useRouter();
-  const create = useMutation(api.documents.create);
+  const create = useMutation(api.documents.createWithTemplate);
   const archive = useMutation(api.documents.archive);
   const removeMember = useMutation(api.documents.removeMember);
 
@@ -98,17 +99,22 @@ export const Item = ({
     onExpand?.();
   };
 
-  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onCreate = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    template?: string
+  ) => {
     event.stopPropagation();
     if (!id) return;
-    const promise = create({ title: "Untitled", parentDocument: id }).then(
-      (documentId) => {
-        if (!expanded) {
-          onExpand?.();
-        }
-        router.push(`/documents/${documentId}`);
+    const promise = create({
+      title: "Untitled",
+      parentDocument: id,
+      template,
+    }).then((documentId) => {
+      if (!expanded) {
+        onExpand?.();
       }
-    );
+      router.push(`/documents/${documentId}`);
+    });
 
     toast.promise(promise, {
       loading: "Creating a new document...",
@@ -178,13 +184,14 @@ export const Item = ({
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div
-            role="button"
-            onClick={onCreate}
-            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
-          >
-            <Plus className="h-5 w-5 sm:h-4 sm:w-4 text-muted-foreground" />
-          </div>
+          <TemplateMenu onCreate={onCreate}>
+            <div
+              role="button"
+              className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+            >
+              <Plus className="h-5 w-5 sm:h-4 sm:w-4 text-muted-foreground" />
+            </div>
+          </TemplateMenu>
         </div>
       )}
       {shared && (

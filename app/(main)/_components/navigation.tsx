@@ -10,7 +10,7 @@ import {
   Trash,
 } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
@@ -31,6 +31,7 @@ import { DocumentList } from "./document-list";
 import { TrashBox } from "./trash-box";
 import { Navbar } from "./navbar";
 import { SharedDocumentList } from "./shared-document-list";
+import { TemplateMenu } from "./templateMenu";
 
 export const Navigation = () => {
   const router = useRouter();
@@ -39,7 +40,7 @@ export const Navigation = () => {
   const params = useParams();
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const create = useMutation(api.documents.create);
+  const create = useMutation(api.documents.createWithTemplate);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -122,8 +123,12 @@ export const Navigation = () => {
     }
   };
 
-  const handleCreate = () => {
-    const promise = create({ title: "Untitled" }).then((documentId) =>
+  const onCreate = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    template?: string
+  ) => {
+    event.stopPropagation();
+    const promise = create({ title: "Untitled", template }).then((documentId) =>
       router.push(`/documents/${documentId}`)
     );
 
@@ -158,11 +163,19 @@ export const Navigation = () => {
           <UserItem />
           <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
           <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
-          <Item onClick={handleCreate} label="New document" icon={PlusCircle} />
+          <TemplateMenu onCreate={onCreate}>
+            <div>
+              <Item label="New document" icon={PlusCircle} />
+            </div>
+          </TemplateMenu>
         </div>
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreate} icon={Plus} label="Add a document" />
+          <TemplateMenu onCreate={onCreate}>
+            <div>
+              <Item icon={Plus} label="Add a document" />
+            </div>
+          </TemplateMenu>
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />

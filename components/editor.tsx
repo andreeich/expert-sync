@@ -10,13 +10,14 @@ import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
 import useYProvider from "y-partykit/react";
 import { useDebounceCallback } from "usehooks-ts";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { set } from "zod";
 interface EditorProps {
   onChange: (value: string) => void;
   initialContent?: string;
   editable?: boolean;
-  username: string;
-  room: string;
+  username?: string;
+  room?: string;
 }
 
 const Editor = ({
@@ -43,32 +44,55 @@ const Editor = ({
   };
 
   // blocks setup
-  const doc = useMemo(() => new Y.Doc(), []);
   // real-time collaboration setup:
-  const provider = useYProvider({
-    host: "blocknote-dev.yousefed.partykit.dev",
-    room,
-    // @ts-ignore there is no problem
-    doc,
-  });
-  // an array of 15 colors to choose from:
-  const colors = [
-    "#FF5733", // Red
-    "#FFBD33", // Orange
-    "#DBFF33", // Yellow
-    "#75FF33", // Lime
-    "#33FF57", // Green
-    "#33FFBD", // Teal
-    "#33DBFF", // Cyan
-    "#3375FF", // Blue
-    "#5733FF", // Indigo
-    "#BD33FF", // Violet
-    "#FF33DB", // Pink
-    "#FF3375", // Rose
-    "#FF9999", // Light Red
-    "#99FF99", // Light Green
-    "#9999FF", // Light Blue
-  ];
+  let collaboration:
+    | {
+        provider: any;
+        fragment: any;
+        user: { name: string; color: string };
+      }
+    | undefined = undefined;
+  if (!!room) {
+    const doc = new Y.Doc();
+    const provider = new YPartyKitProvider(
+      "blocknote-dev.yousefed.partykit.dev",
+      // "http://192.168.0.147:1999",
+      room,
+      // @ts-ignore there is no problem
+      doc
+    );
+    // an array of 15 colors to choose from:
+    const colors = [
+      "#FF5733", // Red
+      "#FFBD33", // Orange
+      "#DBFF33", // Yellow
+      "#75FF33", // Lime
+      "#33FF57", // Green
+      "#33FFBD", // Teal
+      "#33DBFF", // Cyan
+      "#3375FF", // Blue
+      "#5733FF", // Indigo
+      "#BD33FF", // Violet
+      "#FF33DB", // Pink
+      "#FF3375", // Rose
+      "#FF9999", // Light Red
+      "#99FF99", // Light Green
+      "#9999FF", // Light Blue
+    ];
+    collaboration = {
+      // The Yjs Provider responsible for transporting updates:
+      provider,
+      // Where to store BlockNote data in the Y.Doc:
+      // @ts-ignore there is no problem
+      fragment: doc.getXmlFragment("document-store"),
+      // Information (name and color) for this user:
+      user: {
+        name: username!,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      },
+    };
+  }
+
   const initialBlocks = initialContent
     ? // @ts-ignore don't know required types
       (JSON.parse(initialContent) as PartialBlock[])
@@ -80,18 +104,7 @@ const Editor = ({
       onChangeDebounce(JSON.stringify(editor.topLevelBlocks, null, 2));
     },
     uploadFile: handleUpload,
-    collaboration: {
-      // The Yjs Provider responsible for transporting updates:
-      provider,
-      // Where to store BlockNote data in the Y.Doc:
-      // @ts-ignore there is no problem
-      fragment: doc.getXmlFragment("document-store"),
-      // Information (name and color) for this user:
-      user: {
-        name: username,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      },
-    },
+    collaboration,
   });
 
   return (
