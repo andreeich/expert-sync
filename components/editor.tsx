@@ -1,13 +1,9 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import {
-  BlockIdentifier,
-  BlockNoteEditor,
-  PartialBlock,
-} from "@blocknote/core";
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
-import "@blocknote/core/style.css";
+import "@blocknote/react/style.css";
 
 import { useEdgeStore } from "@/lib/edgestore";
 import * as Y from "yjs";
@@ -46,11 +42,13 @@ const Editor = ({
     return response.url;
   };
 
+  // blocks setup
   const doc = useMemo(() => new Y.Doc(), []);
-
+  // real-time collaboration setup:
   const provider = useYProvider({
     host: "blocknote-dev.yousefed.partykit.dev",
     room,
+    // @ts-ignore there is no problem
     doc,
   });
   // an array of 15 colors to choose from:
@@ -72,7 +70,8 @@ const Editor = ({
     "#9999FF", // Light Blue
   ];
   const initialBlocks = initialContent
-    ? (JSON.parse(initialContent) as PartialBlock[])
+    ? // @ts-ignore don't know required types
+      (JSON.parse(initialContent) as PartialBlock[])
     : undefined;
   const editor: BlockNoteEditor = useBlockNote({
     editable,
@@ -85,6 +84,7 @@ const Editor = ({
       // The Yjs Provider responsible for transporting updates:
       provider,
       // Where to store BlockNote data in the Y.Doc:
+      // @ts-ignore there is no problem
       fragment: doc.getXmlFragment("document-store"),
       // Information (name and color) for this user:
       user: {
