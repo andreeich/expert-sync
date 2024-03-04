@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery } from "convex/react";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -10,6 +10,7 @@ import { Toolbar } from "@/components/toolbar";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
+import { useRouter } from "next/navigation";
 
 interface DocumentIdPageProps {
   params: {
@@ -19,13 +20,14 @@ interface DocumentIdPageProps {
 
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
+  const router = useRouter();
 
   const Editor = useMemo(
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   );
 
-  const document = useQuery(api.documents.getById, {
+  const doc = useQuery(api.documents.getById, {
     documentId: params.documentId,
   });
 
@@ -38,7 +40,19 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     });
   };
 
-  if (document === undefined) {
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        router.push(`/documents/`);
+      }
+    };
+
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
+
+  if (doc === undefined) {
     return (
       <div>
         <Cover.Skeleton />
@@ -54,20 +68,20 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     );
   }
 
-  if (document === null) {
+  if (doc === null) {
     return <div>Not found</div>;
   }
 
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} />
+      <Cover url={doc.coverImage} />
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-        <Toolbar initialData={document} />
+        <Toolbar initialData={doc} />
         <Editor
           onChange={onChange}
-          initialContent={document.content}
+          initialContent={doc.content}
           username={user?.fullName || "Anonymous"}
-          room={document._id}
+          room={doc._id}
         />
       </div>
     </div>
