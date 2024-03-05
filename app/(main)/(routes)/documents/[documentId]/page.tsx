@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { Toolbar } from "@/components/toolbar";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
@@ -15,9 +14,6 @@ import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -87,7 +83,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const removeMember = useMutation(api.documents.removeMember);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputSchema = z.coerce.string().email();
-  const [addingMember, setAddingMember] = useState(false);
   const [newMember, setNewMember] = useState("");
 
   const Editor = useMemo(
@@ -112,8 +107,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const onAddNewMember = () => {
     if (newMember === "") return;
 
-    setAddingMember(true);
-
     if (inputSchema.safeParse(newMember).success) {
       const promise = addMember({
         id: params.documentId,
@@ -127,10 +120,8 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       });
 
       setNewMember("");
-      setAddingMember(false);
     } else {
       toast.error("Invalid email address.");
-      setAddingMember(false);
       const classes = ["shadow-ring-error-xs"];
       inputRef.current?.parentElement?.classList.add(...classes);
 
@@ -141,8 +132,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   };
 
   const onRemoveMember = (member: string) => {
-    setAddingMember(true);
-
     const promise = removeMember({
       id: params.documentId,
       member,
@@ -153,8 +142,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       success: "Member removed",
       error: "Failed to remove member.",
     });
-
-    setAddingMember(false);
   };
 
   const onArchive = () => {
@@ -265,7 +252,26 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               </DropdownMenuTrigger>
             </Button>
             <DropdownMenuContent align="end" className="px-0 py-0.5">
-              <DropdownItem title="Rename" icon="file-edit" />
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <DropdownItem title="Rename" icon="file-edit" />
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your account and remove your data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
 
               <DropdownItem title="Publish" icon="share-03" />
               <hr className="text-gray-200 my-1" />

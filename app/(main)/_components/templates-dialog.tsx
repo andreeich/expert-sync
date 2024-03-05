@@ -1,3 +1,5 @@
+"use client";
+
 import { Icon } from "@/components/icon";
 import {
   Dialog,
@@ -12,6 +14,7 @@ import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const templates = [
   {
@@ -66,6 +69,12 @@ const TemplateItem = ({
         {title}
       </p>
     </button>
+  );
+};
+
+TemplateItem.Skeleton = function TemplateItemSkeleton() {
+  return (
+    <Skeleton className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg" />
   );
 };
 

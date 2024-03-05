@@ -1,15 +1,20 @@
+"use client";
+
+import React, { useState } from "react";
+
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { SignOutButton, useUser } from "@clerk/clerk-react";
+
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/icon";
 import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
-import { useMutation, useQuery } from "convex/react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { SignOutButton, useUser } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { TemplatesDialog } from "./templates-dialog";
-import { useMemo, useState } from "react";
+
+import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface NavItemProps {
   label: string;
@@ -18,25 +23,41 @@ interface NavItemProps {
   active?: boolean;
 }
 
-const NavItem = ({ iconVariant, label, onClick, active }: NavItemProps) => {
+const NavItem = React.forwardRef<HTMLButtonElement, NavItemProps>(
+  ({ iconVariant, label, onClick, active }: NavItemProps, ref) => {
+    return (
+      <button
+        className={cn(
+          "flex items-center py-2 px-3 gap-2 w-full h-10 bg-base-white rounded-md hover:bg-gray-50 focus-visible:outline-none focus-visible:shadow-ring-gray transition-all",
+          active && "bg-gray-50"
+        )}
+        onClick={onClick}
+        ref={ref}
+      >
+        <span className="flex items-center gap-3 flex-1">
+          <Icon
+            className="fill-gray-500"
+            variant={iconVariant ? iconVariant : "file-04"}
+          />
+          <span className="text-md/md font-semibold text-gray-700 line-clamp-1 break-all">
+            {label}
+          </span>
+        </span>
+      </button>
+    );
+  }
+);
+
+const NavItemSkeleton = () => {
   return (
-    <button
-      className={cn(
-        "flex items-center py-2 px-3 gap-2 w-full h-10 bg-base-white rounded-md hover:bg-gray-50 focus-visible:outline-none focus-visible:shadow-ring-gray transition-all",
-        active && "bg-gray-50"
-      )}
-      onClick={onClick}
-    >
-      <span className="flex items-center gap-3 flex-1">
-        <Icon
-          className="fill-gray-500"
-          variant={iconVariant ? iconVariant : "file-04"}
-        />
-        <span className="text-md/md font-semibold text-gray-700">{label}</span>
-      </span>
-    </button>
+    <div className="flex items-center py-2 px-3 gap-3 w-full h-10 bg-base-white rounded-md">
+      <Skeleton className="w-6 h-6" />
+      <Skeleton className="w-20 h-4" />
+    </div>
   );
 };
+
+NavItem.displayName = "NavItem";
 
 interface NavItemListProps {
   search?: string;
@@ -54,12 +75,18 @@ const NavItemList = ({ search }: NavItemListProps) => {
   };
 
   if (documents === undefined) {
-    return <>Undefiled</>;
+    return (
+      <>
+        <NavItemSkeleton />
+        <NavItemSkeleton />
+        <NavItemSkeleton />
+      </>
+    );
   }
 
   return (
     <>
-      {documents.length ? (
+      {documents?.length ? (
         documents
           .filter((document) => {
             return search
@@ -126,6 +153,7 @@ const Account = ({ className }: AccountProps) => {
           variant="tertiary gray"
           size="icon-sm"
           className="flex-shrink-0"
+          aria-label="Sign out"
         >
           <Icon variant="log-out-01" className="fill-current" />
         </Button>
@@ -134,34 +162,36 @@ const Account = ({ className }: AccountProps) => {
   );
 };
 
+Account.Skeleton = function AccountSkeleton() {
+  return (
+    <div className="flex gap-4 pl-2 pt-6 items-center justify-between border-t border-gray-200">
+      <div className="flex gap-3">
+        <Skeleton className="w-10 h-10 rounded-full" />
+        <div className="w-full">
+          <Skeleton className="w-20 h-4" />
+          <Skeleton className="w-20 h-4" />
+        </div>
+      </div>
+      <Skeleton className="w-10 h-10" />
+    </div>
+  );
+};
+
 const Sidebar = () => {
   const router = useRouter();
-  const params = useParams();
-  const pathname = usePathname();
   const [search, setSearch] = useState("");
-  const create = useMutation(api.documents.createWithTemplate);
-
-  const onCreate = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    template?: string
-  ) => {
-    event.stopPropagation();
-    const promise = create({ title: "Untitled", template }).then((documentId) =>
-      router.push(`/documents/${documentId}`)
-    );
-
-    toast.promise(promise, {
-      loading: "Creating a new document...",
-      success: "New document created!",
-      error: "Failed to create a new document.",
-    });
-  };
 
   return (
     <aside className="h-full flex flex-col justify-between border-r border-gray-200">
       <section className="space-y-6 pt-8">
         <header className="pl-6 pr-5">
-          <Image src="/logo.svg" width={80} height={32} alt="KCS" />
+          <Button
+            variant="tertiary gray"
+            size="sm"
+            onClick={() => router.push("/")}
+          >
+            <Image src="/logo.svg" width={80} height={32} alt="KCS" />
+          </Button>
         </header>
         <div className="px-6">
           <Input

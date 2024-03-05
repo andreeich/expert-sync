@@ -1,23 +1,17 @@
 "use client";
 
-import Image from "next/image";
-import { useUser } from "@clerk/clerk-react";
-import { PlusCircle } from "lucide-react";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "usehooks-ts";
 
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { TemplateContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { TemplateMenu } from "../../_components/templateMenu";
 import { Icon } from "@/components/icon";
 import { TemplatesDialog } from "../../_components/templates-dialog";
-import { useMediaQuery } from "usehooks-ts";
 
 const DocumentsPage = () => {
   const router = useRouter();
-  const { user } = useUser();
   const create = useMutation(api.documents.createWithTemplate);
   const isMd = useMediaQuery("(max-width: 768px)");
 

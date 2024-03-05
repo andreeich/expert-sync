@@ -18,13 +18,13 @@ export const metadata: Metadata = {
     icon: [
       {
         media: "(prefers-color-scheme: light)",
-        url: "/logo.svg",
-        href: "/logo.svg",
+        url: "/icon.svg",
+        href: "/icon.svg",
       },
       {
         media: "(prefers-color-scheme: dark)",
-        url: "/logo-dark.svg",
-        href: "/logo-dark.svg",
+        url: "/icon-white.svg",
+        href: "/icon-white.svg",
       },
     ],
   },
@@ -40,17 +40,17 @@ export default function RootLayout({
       <body className={inter.className}>
         <ConvexClientProvider>
           <EdgeStoreProvider>
-            <ThemeProvider
+            {/* <ThemeProvider
               attribute="class"
               defaultTheme="system"
               enableSystem
               disableTransitionOnChange
               storageKey="kcs-theme"
-            >
-              <Toaster position="bottom-center" />
-              <ModalProvider />
-              {children}
-            </ThemeProvider>
+            > */}
+            <Toaster position="bottom-center" />
+            <ModalProvider />
+            {children}
+            {/* </ThemeProvider> */}
           </EdgeStoreProvider>
         </ConvexClientProvider>
       </body>
