@@ -52,10 +52,7 @@ export const archive = mutation({
 });
 
 export const getSidebar = query({
-  args: {
-    parentDocument: v.optional(v.id("documents")),
-  },
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
@@ -66,9 +63,7 @@ export const getSidebar = query({
 
     const documents = await ctx.db
       .query("documents")
-      .withIndex("by_user_parent", (q) =>
-        q.eq("userId", userId).eq("parentDocument", args.parentDocument)
-      )
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
       .collect();
@@ -573,7 +568,7 @@ export const getMembers = query({
 
 // get documents by member
 export const getSharedSidebar = query({
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {

@@ -11,11 +11,15 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { TemplateContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { TemplateMenu } from "../../_components/templateMenu";
+import { Icon } from "@/components/icon";
+import { TemplatesDialog } from "../../_components/templates-dialog";
+import { useMediaQuery } from "usehooks-ts";
 
 const DocumentsPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const create = useMutation(api.documents.createWithTemplate);
+  const isMd = useMediaQuery("(max-width: 768px)");
 
   const onCreate = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -34,35 +38,31 @@ const DocumentsPage = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center space-y-4">
-      <Image
-        src="/empty.png"
-        height="300"
-        width="300"
-        alt="Empty"
-        className="dark:hidden"
-      />
-      <Image
-        src="/empty-dark.png"
-        height="300"
-        width="300"
-        alt="Empty"
-        className="hidden dark:block"
-      />
-      <h2 className="text-lg font-medium">
-        Welcome to {user?.firstName}&apos;s Documents
-      </h2>
-      <TemplateMenu onCreate={onCreate}>
-        <Button>
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Create a document
+    <main className="h-full flex flex-col items-center justify-center gap-8 md:gap-12 container">
+      <div className="flex flex-col text-center items-center gap-4 md:gap-6">
+        <h2 className="text-display-md/display-md md:text-display-xl/display-xl font-semibold tracking-tight">
+          No documents yet!
+        </h2>
+        <p className="text-lg/lg md:text-xl/xl text-gray-600">
+          Empty canvas, ready to be filled. Let&apos;s get to work!
+        </p>
+      </div>
+      <div className="flex w-full flex-col md:flex-row gap-3 items-center justify-center">
+        <Button
+          className="w-full md:w-fit"
+          variant="secondary"
+          size={isMd ? "xl" : "2xl"}
+          onClick={() => router.push("/")}
+        >
+          <Icon variant="arrow-left" /> Main page
         </Button>
-      </TemplateMenu>
-      {/* <Button onClick={onCreate}>
-        <PlusCircle className="h-4 w-4 mr-2" />
-        Create a document
-      </Button> */}
-    </div>
+        <TemplatesDialog>
+          <Button className="w-full md:w-fit" size={isMd ? "xl" : "2xl"}>
+            New document
+          </Button>
+        </TemplatesDialog>
+      </div>
+    </main>
   );
 };
 

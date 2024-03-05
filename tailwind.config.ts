@@ -12,7 +12,7 @@ module.exports = {
       center: true,
       padding: {
         DEFAULT: "1rem",
-        md: "2rem",
+        xl: "2rem",
       },
       screens: {
         xl: "80rem",
@@ -253,6 +253,12 @@ module.exports = {
           lg: "64rem",
           xl: "80rem",
         },
+      },
+      backdropBlur: {
+        sm: "4px",
+        md: "16px",
+        lg: "24px",
+        xl: "40px",
       },
     },
   },
