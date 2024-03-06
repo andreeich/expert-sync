@@ -1,0 +1,41 @@
+.bn-container {
+  --bn-colors-editor-text: #101828; /* gray-900 */
+  --bn-colors-menu-text: #101828;
+  --bn-colors-tooltip-text: #101828;
+  --bn-colors-hovered-text: #101828;
+  --bn-colors-selected-background: #101828;
+
+  --bn-colors-disabled-text: #475467; /* gray-600 */
+  --bn-colors-disabled-background: #f9fafb; /* gray-50 */
+
+  --bn-colors-editor-background: #ffffff;
+  --bn-colors-menu-background: #ffffff;
+  --bn-colors-selected-text: #ffffff;
+
+  --bn-colors-tooltip-background: #f2f4f7; /* gray-100 */
+  --bn-colors-hovered-background: #f2f4f7; /* gray-100 */
+
+  --bn-colors-shadow: #d0d5dd; /* gray-300 */
+  --bn-colors-border: #eaecf0; /* gray-200 */
+  --bn-colors-side-menu: #98a2b3; /* gray-400 */
+  --bn-colors-highlights-gray-text: #344054; /* gray-700 */
+  --bn-colors-highlights-gray-background: #f2f4f7; /* gray-100 */
+  --bn-colors-highlights-red-text: #b42318; /* error-700 */
+  --bn-colors-highlights-red-background: #fef3f2;
+  --bn-colors-highlights-orange-text: #b93815;
+  --bn-colors-highlights-orange-background: #fef6ee;
+  --bn-colors-highlights-yellow-text: #a15c07;
+  --bn-colors-highlights-yellow-background: #fefbe8;
+  --bn-colors-highlights-green-text: #087443;
+  --bn-colors-highlights-green-background: #edfcf2;
+  --bn-colors-highlights-blue-text: #175cd3;
+  --bn-colors-highlights-blue-background: #eff8ff;
+  --bn-colors-highlights-purple-text: #5925dc;
+  --bn-colors-highlights-purple-background: #f4f3ff;
+  --bn-colors-highlights-pink-text: #c11574;
+  --bn-colors-highlights-pink-background: #fdf2fa;
+  --bn-font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Open Sans", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --bn-border-radius: 6px;
+}

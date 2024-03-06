@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
@@ -86,16 +86,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const inputSchema = z.coerce.string().email();
   const [newMember, setNewMember] = useState("");
-
-  const Editor = useMemo(
-    () => dynamic(() => import("@/components/editor"), { ssr: false }),
-    []
-  );
-
-  const doc = useQuery(api.documents.getDocumentById, {
-    documentId: params.documentId,
-  });
-
   const updateTitle = useMutation(api.documents.updateDocumentTitle);
   const updateContent = useMutation(api.documents.updateDocumentContent);
   const archive = useMutation(api.documents.archiveDocument);
@@ -105,6 +95,17 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const allMembers = useQuery(api.documents.getMembersByDocument, {
     documentId: params.documentId,
   });
+
+  const doc = useQuery(api.documents.getDocumentById, {
+    documentId: params.documentId,
+  });
+
+  const isOwner = doc?.userId === currentUser?._id;
+
+  const Editor = useMemo(
+    () => dynamic(() => import("@/components/editor/editor"), { ssr: false }),
+    []
+  );
 
   const onChangeTitle = (title: string) => {
     updateTitle({
@@ -196,11 +197,9 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     return <div>Not found</div>;
   }
 
-  const isOwner = doc?.userId === user?.id;
-
   return (
-    <main className="space-y-8 pt-8 pb-12 mt-16 md:mt-0">
-      <header className="flex items-center justify-between px-[3.375rem]">
+    <main className="space-y-6 md:space-y-8 pt-24 md:pt-8 pb-12">
+      <header className="flex items-center gap-2 justify-between pl-[3.375rem] pr-4 md:px-[3.375rem]">
         <h1 className="text-display-sm/display-sm font-semibold text-gray-900">
           {doc.title}
         </h1>
@@ -216,41 +215,40 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               </DropdownMenuTrigger>
             </Button>
             <DropdownMenuContent align="end" className="w-[375px] p-0">
-              <div>
-                <ScrollArea className="w-full max-h-[13rem]">
-                  {allMembers?.length ? (
-                    allMembers?.map((member) => (
-                      <MemberItem
-                        key={member!._id}
-                        email={member?.email || "No email"}
-                        onRemove={() => onRemoveMember(member!._id)}
-                      />
-                    ))
-                  ) : (
-                    <div className="flex items-center px-4 py-2 h-[3.25rem]">
-                      <p className="text-sm/sm text-gray-900 font-medium">
-                        No members yet
-                      </p>
-                    </div>
-                  )}
-                </ScrollArea>
-                <hr className="text-gray-200 my-1" />
-                <section className="px-4 py-3 flex items-center">
-                  <Input
-                    ref={inputRef}
-                    placeholder="Email address"
-                    className="rounded-r-none z-[5]"
-                    onChange={(e) => setNewMember(e.target.value)}
-                  />
-                  <Button
-                    variant="secondary"
-                    className="h-[44px] rounded-l-none border-l-0 z-[0]"
-                    onClick={onAddNewMember}
-                  >
-                    <Icon variant="plus" />
-                  </Button>
-                </section>
-              </div>
+              <ScrollArea className="w-full h-[13rem]">
+                {allMembers?.length ? (
+                  allMembers?.map((member) => (
+                    <MemberItem
+                      key={member!._id}
+                      email={member?.email || "No email"}
+                      onRemove={() => onRemoveMember(member!._id)}
+                    />
+                  ))
+                ) : (
+                  <div className="flex items-center px-4 py-2 h-[3.25rem]">
+                    <p className="text-sm/sm text-gray-900 font-medium">
+                      No members yet
+                    </p>
+                  </div>
+                )}
+                <ScrollBar orientation="vertical" />
+              </ScrollArea>
+              <hr className="text-gray-200 my-1" />
+              <section className="px-4 py-3 flex items-center">
+                <Input
+                  ref={inputRef}
+                  placeholder="Email address"
+                  className="rounded-r-none z-[5]"
+                  onChange={(e) => setNewMember(e.target.value)}
+                />
+                <Button
+                  variant="secondary"
+                  className="h-[44px] rounded-l-none border-l-0 z-[0]"
+                  onClick={onAddNewMember}
+                >
+                  <Icon variant="plus" />
+                </Button>
+              </section>
             </DropdownMenuContent>
           </DropdownMenu>
           <DropdownMenu>
@@ -266,22 +264,19 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your account and remove your data from our servers.
-                    </AlertDialogDescription>
+                    <Input
+                      className="w-full"
+                      label="Please enter a file name"
+                      hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
+                    />
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogAction>Apply</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
 
-              <DropdownItem title="Publish" icon="share-03" />
               <hr className="text-gray-200 my-1" />
               {isOwner ? (
                 <DropdownItem

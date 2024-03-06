@@ -4,14 +4,16 @@ import { useTheme } from "next-themes";
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
+import "./editor.css";
 
 import { useEdgeStore } from "@/lib/edgestore";
 import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
-import useYProvider from "y-partykit/react";
+// import useYProvider from "y-partykit/react";
 import { useDebounceCallback } from "usehooks-ts";
-import { useEffect, useMemo, useState } from "react";
-import { set } from "zod";
+// import { useEffect, useMemo, useState } from "react";
+// import { set } from "zod";
+
 interface EditorProps {
   onChange: (value: string) => void;
   initialContent?: string;
