@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
@@ -34,6 +34,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Spinner } from "@/components/spinner";
+import { updateDocumentContent } from "../../../../../convex/documents";
 
 interface MemberItemProps {
   email: string;
@@ -79,8 +81,8 @@ interface DocumentIdPageProps {
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
   const router = useRouter();
-  const addMember = useMutation(api.documents.addMember);
-  const removeMember = useMutation(api.documents.removeMember);
+  const addMember = useMutation(api.sharedDocuments.addSharedDocumentByEmail);
+  const removeMember = useMutation(api.sharedDocuments.removeSharedDocument);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputSchema = z.coerce.string().email();
   const [newMember, setNewMember] = useState("");
@@ -90,15 +92,29 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     []
   );
 
-  const doc = useQuery(api.documents.getById, {
+  const doc = useQuery(api.documents.getDocumentById, {
     documentId: params.documentId,
   });
 
-  const update = useMutation(api.documents.update);
-  const archive = useMutation(api.documents.archive);
+  const updateTitle = useMutation(api.documents.updateDocumentTitle);
+  const updateContent = useMutation(api.documents.updateDocumentContent);
+  const archive = useMutation(api.documents.archiveDocument);
+  const currentUser = useQuery(api.users.getUserByEmail, {
+    email: user?.emailAddresses[0].emailAddress || "",
+  });
+  const allMembers = useQuery(api.documents.getMembersByDocument, {
+    documentId: params.documentId,
+  });
 
-  const onChange = (content: string) => {
-    update({
+  const onChangeTitle = (title: string) => {
+    updateTitle({
+      id: params.documentId,
+      title,
+    });
+  };
+
+  const onChangeContent = (content: string) => {
+    updateContent({
       id: params.documentId,
       content,
     });
@@ -109,8 +125,8 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
     if (inputSchema.safeParse(newMember).success) {
       const promise = addMember({
-        id: params.documentId,
-        member: newMember,
+        documentId: params.documentId,
+        email: newMember,
       });
 
       toast.promise(promise, {
@@ -131,10 +147,10 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     }
   };
 
-  const onRemoveMember = (member: string) => {
+  const onRemoveMember = (userId: Doc<"users">["_id"]) => {
     const promise = removeMember({
-      id: params.documentId,
-      member,
+      documentId: params.documentId,
+      userId,
     });
 
     toast.promise(promise, {
@@ -166,20 +182,12 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [router]);
 
   if (doc === undefined) {
     return (
-      <div>
-        <Cover.Skeleton />
-        <div className="md:max-w-3xl lg:max-w-4xl mx-auto mt-10">
-          <div className="space-y-4 pl-8 pt-4">
-            <Skeleton className="h-14 w-[50%]" />
-            <Skeleton className="h-4 w-[80%]" />
-            <Skeleton className="h-4 w-[40%]" />
-            <Skeleton className="h-4 w-[60%]" />
-          </div>
-        </div>
+      <div className="h-full flex items-center justify-center">
+        <Spinner size="lg" />
       </div>
     );
   }
@@ -191,7 +199,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const isOwner = doc?.userId === user?.id;
 
   return (
-    <main className="space-y-8 pt-8 pb-12">
+    <main className="space-y-8 pt-8 pb-12 mt-16 md:mt-0">
       <header className="flex items-center justify-between px-[3.375rem]">
         <h1 className="text-display-sm/display-sm font-semibold text-gray-900">
           {doc.title}
@@ -210,12 +218,12 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
             <DropdownMenuContent align="end" className="w-[375px] p-0">
               <div>
                 <ScrollArea className="w-full max-h-[13rem]">
-                  {doc.members?.length ? (
-                    doc.members?.map((member: string) => (
+                  {allMembers?.length ? (
+                    allMembers?.map((member) => (
                       <MemberItem
-                        key={member}
-                        email={member}
-                        onRemove={() => onRemoveMember(member)}
+                        key={member!._id}
+                        email={member?.email || "No email"}
+                        onRemove={() => onRemoveMember(member!._id)}
                       />
                     ))
                   ) : (
@@ -285,9 +293,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                 <DropdownItem
                   title="Disconnect"
                   icon="log-out-01"
-                  onClick={() =>
-                    onRemoveMember(user?.emailAddresses[0].emailAddress!)
-                  }
+                  onClick={() => onRemoveMember(currentUser?._id!)}
                 />
               )}
             </DropdownMenuContent>
@@ -296,7 +302,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       </header>
       <section>
         <Editor
-          onChange={onChange}
+          onChange={onChangeContent}
           initialContent={doc.content}
           username={user?.fullName || "Anonymous"}
           room={doc._id}

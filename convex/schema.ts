@@ -3,18 +3,33 @@ import { v } from "convex/values";
 
 export default defineSchema({
   documents: defineTable({
+    userId: v.id("users"),
     title: v.string(),
-    userId: v.string(),
-    isArchived: v.boolean(),
-    parentDocument: v.optional(v.id("documents")),
     content: v.optional(v.string()),
-    coverImage: v.optional(v.string()),
-    icon: v.optional(v.string()),
-    isPublished: v.boolean(),
-    members: v.optional(v.array(v.string())),
+    isArchived: v.boolean(),
+  }).index("by_user", ["userId"]),
+  users: defineTable({
+    firstName: v.string(),
+    lastName: v.string(),
+    fullName: v.string(),
+    email: v.string(),
+    username: v.string(),
+  }).index("by_email", ["email"]),
+  sharedDocuments: defineTable({
+    documentId: v.id("documents"),
+    userId: v.id("users"),
   })
     .index("by_user", ["userId"])
-    .index("by_user_parent", ["userId", "parentDocument"])
-    .index("by_user_members", ["userId", "members"])
-    .index("by_user_members_parent", ["userId", "members", "parentDocument"]),
+    .index("by_document", ["documentId"])
+    .index("by_user_document", ["userId", "documentId"]),
+  templates: defineTable({
+    name: v.string(),
+    icon: v.string(),
+    content: v.string(),
+    isGeneral: v.boolean(),
+    userId: v.optional(v.id("users")),
+  })
+    .index("by_user", ["userId"])
+    .index("by_name", ["name"])
+    .index("by_isGeneral", ["isGeneral"]),
 });

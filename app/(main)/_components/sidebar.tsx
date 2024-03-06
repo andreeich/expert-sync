@@ -15,6 +15,8 @@ import { TemplatesDialog } from "./templates-dialog";
 
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
+import { useTemplateDialog } from "@/hooks/use-template-dialog";
 
 interface NavItemProps {
   label: string;
@@ -66,15 +68,14 @@ interface NavItemListProps {
 const NavItemList = ({ search }: NavItemListProps) => {
   const params = useParams();
   const router = useRouter();
-  const documentsOwn = useQuery(api.documents.getSidebar);
-  const documentsShared = useQuery(api.documents.getSharedSidebar);
-  const documents = documentsOwn?.concat(documentsShared || []);
+  const documents = useQuery(api.documents.getAllDocuments);
+  const sidebarSheet = useSidebarSheet();
 
   const onRedirect = (documentId: string) => {
     router.push(`/documents/${documentId}`);
   };
 
-  if (documents === undefined) {
+  if (!documents) {
     return (
       <>
         <NavItemSkeleton />
@@ -86,23 +87,30 @@ const NavItemList = ({ search }: NavItemListProps) => {
 
   return (
     <>
-      {documents?.length ? (
+      {documents.length ? (
         documents
           .filter((document) => {
+            if (!document) return false;
             return search
               ? document.title
                   .toLocaleLowerCase()
                   .includes(search.toLocaleLowerCase())
               : true;
           })
-          .map((document) => (
-            <NavItem
-              key={document._id}
-              label={document.title}
-              onClick={() => onRedirect(document._id)}
-              active={params.documentId === document._id}
-            />
-          ))
+          .map((document) => {
+            if (!document) return false;
+            return (
+              <NavItem
+                key={document._id}
+                label={document.title}
+                onClick={() => {
+                  onRedirect(document._id);
+                  sidebarSheet.onClose();
+                }}
+                active={params.documentId === document._id}
+              />
+            );
+          })
       ) : (
         <p className="flex items-center py-2 px-3 gap-2 w-full h-10 text-md/md font-semibold text-gray-300">
           No documents
@@ -155,7 +163,7 @@ const Account = ({ className }: AccountProps) => {
           className="flex-shrink-0"
           aria-label="Sign out"
         >
-          <Icon variant="log-out-01" className="fill-current" />
+          <Icon variant="log-out-01" className="fill-current w-5 h-5" />
         </Button>
       </SignOutButton>
     </div>
@@ -183,8 +191,8 @@ const Sidebar = () => {
 
   return (
     <aside className="h-full flex flex-col justify-between border-r border-gray-200">
-      <section className="space-y-6 pt-8">
-        <header className="pl-6 pr-5">
+      <section className="space-y-5 md:space-y-6 pt-4 md:pt-8 ">
+        <header className="px-4 md:pl-6 md:pr-5">
           <Button
             variant="tertiary gray"
             size="sm"
@@ -193,7 +201,7 @@ const Sidebar = () => {
             <Image src="/logo.svg" width={80} height={32} alt="KCS" />
           </Button>
         </header>
-        <div className="px-6">
+        <div className="px-4 md:px-6">
           <Input
             placeholder="Search"
             className="w-full"
@@ -201,11 +209,11 @@ const Sidebar = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <nav className="px-4 space-y-1">
+        <nav className="px-2 md:px-4 space-y-1">
           <NavItemList search={search} />
         </nav>
       </section>
-      <footer className="space-y-6 px-4 pb-8">
+      <footer className="px-2 space-y-6 md:px-4 pb-8">
         <nav className="space-y-1">
           <TemplatesDialog>
             <NavItem label="New document" iconVariant="plus-circle" />

@@ -12,15 +12,15 @@ import { TemplatesDialog } from "../../_components/templates-dialog";
 
 const DocumentsPage = () => {
   const router = useRouter();
-  const create = useMutation(api.documents.createWithTemplate);
+  const create = useMutation(api.documents.createDocument);
   const isMd = useMediaQuery("(max-width: 768px)");
 
   const onCreate = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    template?: string
+    template: string
   ) => {
     event.stopPropagation();
-    const promise = create({ title: "Untitled", template }).then((documentId) =>
+    const promise = create({ template }).then((documentId) =>
       router.push(`/documents/${documentId}`)
     );
 
@@ -32,7 +32,7 @@ const DocumentsPage = () => {
   };
 
   return (
-    <main className="h-full flex flex-col items-center justify-center gap-8 md:gap-12 container">
+    <main className="h-full flex flex-col items-center justify-center gap-8 md:gap-12 container mt-16 md:mt-0">
       <div className="flex flex-col text-center items-center gap-4 md:gap-6">
         <h2 className="text-display-md/display-md md:text-display-xl/display-xl font-semibold tracking-tight">
           No documents yet!
