@@ -78,7 +78,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
   return (
     <Dialog open={templateDialog.isOpen} onOpenChange={templateDialog.onToggle}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className="p-4 md:p-8">
         <header className="space-y-2 pb-3">
           <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900">
             Choose a template

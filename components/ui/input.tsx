@@ -12,7 +12,7 @@ export interface InputProps
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, leadingIcon, onChange, label, hint, ...props }, ref) => {
     return (
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 w-full text-start">
         {label && (
           <label className="text-sm/sm font-medium text-gray-700">
             {label}

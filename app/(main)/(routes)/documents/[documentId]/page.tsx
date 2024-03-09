@@ -1,8 +1,10 @@
 "use client";
 
+import React from "react";
+
 import { useMutation, useQuery } from "convex/react";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
@@ -35,7 +37,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/spinner";
-import { updateDocumentContent } from "../../../../../convex/documents";
 
 interface MemberItemProps {
   email: string;
@@ -59,18 +60,22 @@ interface DropdownItemProps {
   onClick?: () => void;
 }
 
-const DropdownItem = ({ title, icon, onClick }: DropdownItemProps) => {
-  return (
-    <button className="px-1.5 py-0.5 group w-full" onClick={onClick}>
-      <div className="flex items-center h-full gap-3 rounded-md w-full px-2.5 py-2 group-hover:bg-gray-50 transition-colors">
-        <Icon variant={icon} className="gray-500 w-4 h-4" />
-        <span className="text-sm/sm font-medium text-gray-700 group-disabled:text-gray-500">
-          {title}
-        </span>
-      </div>
-    </button>
-  );
-};
+const DropdownItem = React.forwardRef<HTMLButtonElement, DropdownItemProps>(
+  ({ title, icon, onClick }: DropdownItemProps) => {
+    return (
+      <button className="px-1.5 py-0.5 group w-full" onClick={onClick}>
+        <div className="flex items-center h-full gap-3 rounded-md w-full px-2.5 py-2 group-hover:bg-gray-50 transition-colors">
+          <Icon variant={icon} className="gray-500 w-4 h-4" />
+          <span className="text-sm/sm font-medium text-gray-700 group-disabled:text-gray-500">
+            {title}
+          </span>
+        </div>
+      </button>
+    );
+  }
+);
+
+DropdownItem.displayName = "DropdownItem";
 
 interface DocumentIdPageProps {
   params: {
@@ -81,11 +86,13 @@ interface DocumentIdPageProps {
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
   const router = useRouter();
-  const addMember = useMutation(api.sharedDocuments.addSharedDocumentByEmail);
+
+  const [memberEmail, setMemberEmail] = useState("");
+  const memberEmailRef = useRef<HTMLInputElement>(null);
+  const memberEmailSchema = z.coerce.string().email();
+
   const removeMember = useMutation(api.sharedDocuments.removeSharedDocument);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const inputSchema = z.coerce.string().email();
-  const [newMember, setNewMember] = useState("");
+  const addMember = useMutation(api.sharedDocuments.addSharedDocumentByEmail);
   const updateTitle = useMutation(api.documents.updateDocumentTitle);
   const updateContent = useMutation(api.documents.updateDocumentContent);
   const archive = useMutation(api.documents.archiveDocument);
@@ -95,10 +102,18 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const allMembers = useQuery(api.documents.getMembersByDocument, {
     documentId: params.documentId,
   });
-
   const doc = useQuery(api.documents.getDocumentById, {
     documentId: params.documentId,
   });
+
+  const [docTitle, setDocTitle] = useState(doc?.title || "Untitled");
+  const docTitleRef = useRef<HTMLInputElement>(null);
+  const docTitleSchema = z.coerce
+    .string()
+    .min(1)
+    .regex(/^[^"\/:*?"<>|]*[^"\/:*?"<>|\.\s]$/);
+
+  const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
 
   const isOwner = doc?.userId === currentUser?._id;
 
@@ -122,12 +137,12 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   };
 
   const onAddNewMember = () => {
-    if (newMember === "") return;
+    if (memberEmail === "") return;
 
-    if (inputSchema.safeParse(newMember).success) {
+    if (memberEmailSchema.safeParse(memberEmail).success) {
       const promise = addMember({
         documentId: params.documentId,
-        email: newMember,
+        email: memberEmail,
       });
 
       toast.promise(promise, {
@@ -136,14 +151,14 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
         error: "Failed to add member.",
       });
 
-      setNewMember("");
+      setMemberEmail("");
     } else {
       toast.error("Invalid email address.");
-      const classes = ["shadow-ring-error-xs"];
-      inputRef.current?.parentElement?.classList.add(...classes);
+      const classes = ["!shadow-ring-error-xs"];
+      memberEmailRef.current?.parentElement?.classList.add(...classes);
 
       setTimeout(() => {
-        inputRef.current?.parentElement?.classList.remove(...classes);
+        memberEmailRef.current?.parentElement?.classList.remove(...classes);
       }, 500);
     }
   };
@@ -171,6 +186,37 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     });
 
     router.push("/documents");
+  };
+
+  const onRename = () => {
+    if (docTitle === "") return;
+
+    if (docTitleSchema.safeParse(docTitle.trim()).success) {
+      const promise = updateTitle({
+        id: params.documentId,
+        title: docTitle.trim(),
+      }).then(() => {
+        setDocTitle(doc?.title || docTitle);
+      });
+
+      toast.promise(promise, {
+        loading: "Renaming document...",
+        success: "Document renamed",
+        error: "Failed to rename document.",
+      });
+
+      setIsRenameDialogOpen(false);
+    } else {
+      toast.error("Wrong document name format!");
+      const classes = ["!shadow-ring-error-xs"];
+      docTitleRef.current?.parentElement?.classList.add(...classes);
+
+      setTimeout(() => {
+        docTitleRef.current?.parentElement?.classList.remove(...classes);
+      }, 500);
+
+      setDocTitle(doc?.title || docTitle);
+    }
   };
 
   useEffect(() => {
@@ -236,10 +282,11 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               <hr className="text-gray-200 my-1" />
               <section className="px-4 py-3 flex items-center">
                 <Input
-                  ref={inputRef}
+                  ref={memberEmailRef}
                   placeholder="Email address"
-                  className="rounded-r-none z-[5]"
-                  onChange={(e) => setNewMember(e.target.value)}
+                  value={memberEmail}
+                  className="rounded-r-none z-[5] w-full"
+                  onChange={(e) => setMemberEmail(e.target.value)}
                 />
                 <Button
                   variant="secondary"
@@ -258,7 +305,13 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               </DropdownMenuTrigger>
             </Button>
             <DropdownMenuContent align="end" className="px-0 py-0.5">
-              <AlertDialog>
+              <AlertDialog
+                onOpenChange={() => {
+                  setDocTitle(doc?.title || docTitle);
+                  setIsRenameDialogOpen((prev) => !prev);
+                }}
+                open={isRenameDialogOpen}
+              >
                 <AlertDialogTrigger asChild>
                   <DropdownItem title="Rename" icon="file-edit" />
                 </AlertDialogTrigger>
@@ -268,11 +321,14 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                       className="w-full"
                       label="Please enter a file name"
                       hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
+                      value={docTitle}
+                      onChange={(e) => setDocTitle(e.target.value)}
+                      ref={docTitleRef}
                     />
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Apply</AlertDialogAction>
+                    <Button onClick={onRename}>Apply</Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

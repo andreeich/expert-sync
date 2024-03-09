@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 import { useTemplateDialog } from "@/hooks/use-template-dialog";
+import { ArchiveDialog } from "./archive-dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface NavItemProps {
   label: string;
@@ -190,9 +192,9 @@ const Sidebar = () => {
   const [search, setSearch] = useState("");
 
   return (
-    <aside className="h-full flex flex-col justify-between border-r border-gray-200">
-      <section className="space-y-5 md:space-y-6 pt-4 md:pt-8 ">
-        <header className="px-4 md:pl-6 md:pr-5">
+    <aside className="h-full flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 max-h-screen">
+      <header className="space-y-5 md:space-y-6 pt-4 md:pt-8">
+        <div className="px-4 md:pl-6 md:pr-5">
           <Button
             variant="tertiary gray"
             size="sm"
@@ -200,7 +202,7 @@ const Sidebar = () => {
           >
             <Image src="/logo.svg" width={80} height={32} alt="KCS" />
           </Button>
-        </header>
+        </div>
         <div className="px-4 md:px-6">
           <Input
             placeholder="Search"
@@ -209,8 +211,15 @@ const Sidebar = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <nav className="px-2 md:px-4 space-y-1">
-          <NavItemList search={search} />
+      </header>
+      <section className="overflow-y-auto h-full">
+        <nav className="px-2 md:px-4">
+          <ScrollArea className="max-h-full">
+            <div className="space-y-1  h-full">
+              <NavItemList search={search} />
+            </div>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         </nav>
       </section>
       <footer className="px-2 space-y-6 md:px-4 pb-8">
@@ -218,6 +227,9 @@ const Sidebar = () => {
           <TemplatesDialog>
             <NavItem label="New document" iconVariant="plus-circle" />
           </TemplatesDialog>
+          <ArchiveDialog>
+            <NavItem label="Trash" iconVariant="trash-01" />
+          </ArchiveDialog>
           <NavItem label="Settings" iconVariant="settings-01" />
         </nav>
         <Account />
