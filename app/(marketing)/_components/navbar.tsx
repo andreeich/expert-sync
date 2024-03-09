@@ -9,44 +9,52 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/spinner";
 import { cn } from "@/lib/utils";
-
-import { Logo } from "./logo";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const scrolled = useScrollTop();
+  const router = useRouter();
 
   return (
     <div
       className={cn(
-        "z-50 bg-background  fixed top-0 flex items-center justify-end md:justify-between w-full p-6",
-        scrolled && "border-b shadow-sm"
+        "z-50 bg-base-white  fixed top-0 w-full h-[4rem] md:h-[5rem] border-b border-gray-200"
+        // scrolled && "border-b border-gray-200 shadow-sm"
       )}
     >
-      <Logo />
-      <div className="md:ml-auto md:justify-end justify-between flex items-center gap-x-2">
-        {isLoading && <Spinner />}
-        {!isAuthenticated && !isLoading && (
-          <>
-            <SignInButton mode="modal">
-              <Button variant="ghost" size="sm">
-                Log in
+      <div className="container flex items-center justify-between h-full w-full">
+        <Button
+          variant="tertiary gray"
+          size="sm"
+          onClick={() => router.push("/")}
+        >
+          <Image src="/logo.svg" width={80} height={32} alt="KCS" />
+        </Button>
+        <div className="md:ml-auto md:justify-end justify-between flex items-center gap-x-2">
+          {isLoading && <Spinner />}
+          {!isAuthenticated && !isLoading && (
+            <>
+              <SignInButton mode="modal">
+                <Button variant="tertiary gray" size="sm">
+                  Log in
+                </Button>
+              </SignInButton>
+              <SignInButton mode="modal">
+                <Button size="sm">Register</Button>
+              </SignInButton>
+            </>
+          )}
+          {isAuthenticated && !isLoading && (
+            <>
+              <Button variant="tertiary gray" size="sm" asChild>
+                <Link href="/documents">Enter Dashboard</Link>
               </Button>
-            </SignInButton>
-            <SignInButton mode="modal">
-              <Button size="sm">Register</Button>
-            </SignInButton>
-          </>
-        )}
-        {isAuthenticated && !isLoading && (
-          <>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/documents">Enter Dashboard</Link>
-            </Button>
-            <UserButton afterSignOutUrl="/" />
-          </>
-        )}
-        <ModeToggle />
+              <UserButton afterSignOutUrl="/" />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

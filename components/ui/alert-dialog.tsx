@@ -41,7 +41,7 @@ const AlertDialogContent = React.forwardRef<
       )}
       {...props}
     >
-      <div className="bg-base-white mx-auto grid w-full max-w-lg gap-4 border border-gray-300 p-6 shadow-sm rounded-lg">
+      <div className="bg-base-white mx-auto grid w-full max-w-lg gap-4 border border-gray-200 p-6 shadow-sm rounded-lg">
         {children}
       </div>
     </AlertDialogPrimitive.Content>

@@ -8,6 +8,21 @@ body,
   height: 100%;
 }
 
+@layer utilities {
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  .max-h-screen {
+    max-height: 100vh;
+    max-height: 100svh;
+  }
+  .h-screen {
+    height: 100vh;
+    height: 100svh;
+  }
+}
+
 /* @layer base {
   :root {
     --background: 0 0% 100%;

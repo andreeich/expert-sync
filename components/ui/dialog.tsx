@@ -46,7 +46,7 @@ const DialogContent = React.forwardRef<
     >
       <div
         className={cn(
-          "grid mx-auto relative w-full max-w-[628px] gap-4 border border-gray-300 bg-base-white shadow-sm rounded-lg ",
+          "grid mx-auto relative w-full max-w-[628px] gap-4 border border-gray-200 bg-base-white shadow-sm rounded-lg ",
           className
         )}
       >

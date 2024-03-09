@@ -16,6 +16,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTemplateDialog } from "@/hooks/use-template-dialog";
+import { Id } from "@/convex/_generated/dataModel";
+import { Button } from "@/components/ui/button";
+import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 
 interface TemplateItemProps {
   name: string;
@@ -24,25 +27,41 @@ interface TemplateItemProps {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     template: string
   ) => void;
+  onRemove?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    template: string
+  ) => void;
 }
 
-const TemplateItem = ({ name, icon, onClick }: TemplateItemProps) => {
+const TemplateItem = ({ name, icon, onClick, onRemove }: TemplateItemProps) => {
   return (
-    <button
-      className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-300 flex flex-col items-center justify-center transition-all text-gray-900 bg-base-white hover:bg-gray-50 focus-visible:shadow-ring-gray-xs outline-none"
-      onClick={(e) => onClick(e, name)}
-    >
-      <Icon variant={icon} />
-      <p className="text-xs/xs md:text-sm/sm font-semibold line-clamp-2">
-        {name}
-      </p>
-    </button>
+    <div className="relative w-fit h-fit">
+      <button
+        className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 flex flex-col items-center justify-center transition-all text-gray-900 bg-base-white hover:bg-gray-50 focus-visible:shadow-ring-gray-xs outline-none"
+        onClick={(e) => onClick(e, name)}
+      >
+        <Icon variant={icon} />
+        <p className="text-xs/xs md:text-sm/sm font-semibold line-clamp-2">
+          {name}
+        </p>
+      </button>
+      {onRemove && (
+        <Button
+          variant="tertiary color"
+          size="icon-xs"
+          className="absolute right-1 top-1"
+          onClick={(e) => onRemove(e, name)}
+        >
+          <Icon variant="delete" className="w-5 h-5" />
+        </Button>
+      )}
+    </div>
   );
 };
 
 TemplateItem.Skeleton = function TemplateItemSkeleton() {
   return (
-    <Skeleton className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-300 bg-base-white" />
+    <Skeleton className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 bg-base-white" />
   );
 };
 
@@ -52,8 +71,10 @@ interface TemplatesDialogProps {
 
 const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
   const templateDialog = useTemplateDialog();
+  const sidebarSheet = useSidebarSheet();
 
   const create = useMutation(api.documents.createDocument);
+  const removeTemplate = useMutation(api.templates.removeTemplate);
   const templates = useQuery(api.templates.getGeneralTemplates);
   const userTemplates = useQuery(api.templates.getUserTemplates);
   const router = useRouter();
@@ -72,6 +93,20 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
       loading: "Creating a new document...",
       success: "New document created!",
       error: "Failed to create a new document.",
+    });
+  };
+
+  const onRemove = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    template: string
+  ) => {
+    event.stopPropagation();
+    const promise = removeTemplate({ name: template });
+
+    toast.promise(promise, {
+      loading: "Removing template...",
+      success: "Template removed!",
+      error: "Failed to remove template.",
     });
   };
 
@@ -124,6 +159,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
                 name={template.name}
                 icon={template.icon}
                 onClick={onCreate}
+                onRemove={onRemove}
               />
             ))}
           </div>

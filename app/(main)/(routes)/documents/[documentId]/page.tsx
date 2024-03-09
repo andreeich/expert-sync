@@ -37,6 +37,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/spinner";
+import { addTemplate } from "../../../../../convex/templates";
+import { useDebounceCallback } from "usehooks-ts";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MemberItemProps {
   email: string;
@@ -95,6 +104,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const addMember = useMutation(api.sharedDocuments.addSharedDocumentByEmail);
   const updateTitle = useMutation(api.documents.updateDocumentTitle);
   const updateContent = useMutation(api.documents.updateDocumentContent);
+  const addTemplate = useMutation(api.templates.addTemplate);
   const archive = useMutation(api.documents.archiveDocument);
   const currentUser = useQuery(api.users.getUserByEmail, {
     email: user?.emailAddresses[0].emailAddress || "",
@@ -105,15 +115,26 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const doc = useQuery(api.documents.getDocumentById, {
     documentId: params.documentId,
   });
+  const userTemplatesNames = useQuery(api.templates.getUserTemplates)?.map(
+    (template) => {
+      return template.name;
+    }
+  );
 
-  const [docTitle, setDocTitle] = useState(doc?.title || "Untitled");
   const docTitleRef = useRef<HTMLInputElement>(null);
   const docTitleSchema = z.coerce
     .string()
     .min(1)
     .regex(/^[^"\/:*?"<>|]*[^"\/:*?"<>|\.\s]$/);
 
+  const templateNameRef = useRef<HTMLInputElement>(null);
+  const templateNameSchema = z.coerce
+    .string()
+    .min(1)
+    .regex(/^[^"\/:*?"<>|]*[^"\/:*?"<>|\.\s]$/);
+
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
   const isOwner = doc?.userId === currentUser?._id;
 
@@ -121,13 +142,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     () => dynamic(() => import("@/components/editor/editor"), { ssr: false }),
     []
   );
-
-  const onChangeTitle = (title: string) => {
-    updateTitle({
-      id: params.documentId,
-      title,
-    });
-  };
 
   const onChangeContent = (content: string) => {
     updateContent({
@@ -189,14 +203,13 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   };
 
   const onRename = () => {
+    const docTitle = docTitleRef.current?.value || "";
     if (docTitle === "") return;
 
     if (docTitleSchema.safeParse(docTitle.trim()).success) {
       const promise = updateTitle({
         id: params.documentId,
         title: docTitle.trim(),
-      }).then(() => {
-        setDocTitle(doc?.title || docTitle);
       });
 
       toast.promise(promise, {
@@ -214,8 +227,39 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       setTimeout(() => {
         docTitleRef.current?.parentElement?.classList.remove(...classes);
       }, 500);
+    }
+  };
 
-      setDocTitle(doc?.title || docTitle);
+  const onAddTemplate = () => {
+    const templateName = templateNameRef.current?.value || "";
+
+    if (templateName === "") return;
+
+    if (
+      templateNameSchema.safeParse(templateName.trim()).success &&
+      !userTemplatesNames?.includes(templateName.trim())
+    ) {
+      const promise = addTemplate({
+        name: templateName.trim(),
+        content: doc?.content || "[]",
+        icon: "file-05",
+      });
+
+      toast.promise(promise, {
+        loading: "Adding template...",
+        success: "Template added",
+        error: "Failed to add template.",
+      });
+
+      setIsTemplateDialogOpen(false);
+    } else {
+      toast.error("Wrong template name format!");
+      const classes = ["!shadow-ring-error-xs"];
+      templateNameRef.current?.parentElement?.classList.add(...classes);
+
+      setTimeout(() => {
+        templateNameRef.current?.parentElement?.classList.remove(...classes);
+      }, 500);
     }
   };
 
@@ -246,9 +290,19 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   return (
     <main className="space-y-6 md:space-y-8 pt-24 md:pt-8 pb-12">
       <header className="flex items-center gap-2 justify-between pl-[3.375rem] pr-4 md:px-[3.375rem]">
-        <h1 className="text-display-sm/display-sm font-semibold text-gray-900">
-          {doc.title}
-        </h1>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <h1 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold text-gray-900 line-clamp-1 break-all">
+                {doc.title}
+              </h1>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{doc.title}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <menu className="flex items-center gap-3">
           <DropdownMenu>
             <Button className="group" variant="secondary" size="sm" asChild>
@@ -307,7 +361,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
             <DropdownMenuContent align="end" className="px-0 py-0.5">
               <AlertDialog
                 onOpenChange={() => {
-                  setDocTitle(doc?.title || docTitle);
                   setIsRenameDialogOpen((prev) => !prev);
                 }}
                 open={isRenameDialogOpen}
@@ -321,8 +374,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                       className="w-full"
                       label="Please enter a file name"
                       hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
-                      value={docTitle}
-                      onChange={(e) => setDocTitle(e.target.value)}
+                      defaultValue={doc?.title || "Untitled"}
                       ref={docTitleRef}
                     />
                   </AlertDialogHeader>
@@ -332,6 +384,33 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+              {isOwner && (
+                <AlertDialog
+                  onOpenChange={() => {
+                    setIsTemplateDialogOpen((prev) => !prev);
+                  }}
+                  open={isTemplateDialogOpen}
+                >
+                  <AlertDialogTrigger asChild>
+                    <DropdownItem title="Create a template" icon="file-05" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <Input
+                        className="w-full"
+                        label="Please enter a template name"
+                        placeholder="Template name"
+                        hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
+                        ref={templateNameRef}
+                      />
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <Button onClick={onAddTemplate}>Apply</Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
 
               <hr className="text-gray-200 my-1" />
               {isOwner ? (

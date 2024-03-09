@@ -12,33 +12,31 @@ export const Heading = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
 
   return (
-    <div className="max-w-3xl space-y-4">
-      <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold">
-        Welcome to <span className="underline">Keeem Communication System</span>
-      </h1>
-      <h3 className="text-base sm:text-xl md:text-2xl font-medium">
-        KCS is the connected workspace where <br />
-        better, faster work happens.
-      </h3>
-      {isLoading && (
-        <div className="w-full flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
-      )}
+    <div className="max-w-3xl space-y-8">
+      <div className="space-y-4 ">
+        <h1 className="text-display-xl/display-xl font-semibold tracking-tight text-gray-900">
+          Welcome to{" "}
+          <span className="underline">Keeem Communication System</span>
+        </h1>
+        <h3 className="text-display-xs/display-xs font-semibold tracking-tight text-gray-600">
+          KCS is the connected workspace where <br />
+          better, faster work happens.
+        </h3>
+      </div>
       {isAuthenticated && !isLoading && (
-        <Button asChild>
-          <Link href="/documents">
-            Enter Dashboard
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Link>
+        <Button asChild size="2xl">
+          <Link href="/documents">Enter Dashboard</Link>
+        </Button>
+      )}
+      {!isAuthenticated && isLoading && (
+        <Button disabled size="2xl">
+          <Spinner size="lg" />
+          Login
         </Button>
       )}
       {!isAuthenticated && !isLoading && (
         <SignInButton mode="modal">
-          <Button>
-            Login
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
+          <Button size="2xl">Login</Button>
         </SignInButton>
       )}
     </div>

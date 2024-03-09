@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button";
 
-import { Logo } from "./logo";
+import Image from "next/image";
 
 export const Footer = () => {
   return (
-    <div className="flex items-center w-full p-6 bg-background z-50 ">
-      <Logo />
-      <div className="md:ml-auto w-full justify-between md:justify-end flex items-center gap-x-2 text-muted-foreground">
-        <Button variant="secondary" size="sm">
-          Privacy Policy
-        </Button>
-        <Button variant="secondary" size="sm">
-          Terms & Conditions
-        </Button>
+    <footer className="w-full bg-base-white py-12 z-50 ">
+      <div className="container flex flex-col md:flex-row items-center gap-12 md:gap4 md:justify-between">
+        <Image src="/logo.svg" width={80} height={32} alt="KCS" />
+        <p className="text-md/md text-gray-500">
+          © 2024 KCS. All rights reserved.
+        </p>
       </div>
-    </div>
+    </footer>
   );
 };

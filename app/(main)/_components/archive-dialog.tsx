@@ -68,7 +68,7 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
   const [search, setSearch] = useState("");
 
   const onRestore = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     id: Id<"documents">
   ) => {
     event.stopPropagation();
@@ -83,7 +83,7 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
   };
 
   const onRemove = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     id: Id<"documents">
   ) => {
     event.stopPropagation();
