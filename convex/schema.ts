@@ -14,6 +14,7 @@ export default defineSchema({
     fullName: v.string(),
     email: v.string(),
     username: v.string(),
+    avatarUrl: v.optional(v.string()),
   }).index("by_email", ["email"]),
   sharedDocuments: defineTable({
     documentId: v.id("documents"),
@@ -32,4 +33,11 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_name", ["name"])
     .index("by_isGeneral", ["isGeneral"]),
+  messages: defineTable({
+    documentId: v.id("documents"),
+    userId: v.id("users"),
+    content: v.string(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_document", ["documentId"]),
 });

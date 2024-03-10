@@ -127,7 +127,7 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
               onChange={(e) => setSearch(e.target.value)}
             />
           </section>
-          <hr className="text-gray-200 my-1" />
+          <hr className="text-gray-200" />
           <ScrollArea className="w-full h-[13rem]">
             {archivedDocuments?.length ? (
               archivedDocuments

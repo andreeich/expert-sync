@@ -140,7 +140,7 @@ const Account = ({ className }: AccountProps) => {
         <div className="rounded-full overflow-clip flex-shrink-0">
           {user?.imageUrl ? (
             <Image
-              src={user.imageUrl}
+              src={user?.imageUrl || "/avatar-placeholder.svg"}
               width={40}
               height={40}
               alt="user image"

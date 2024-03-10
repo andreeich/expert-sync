@@ -13,8 +13,9 @@ import YPartyKitProvider from "y-partykit/provider";
 import { useDebounceCallback } from "usehooks-ts";
 // import { useEffect, useMemo, useState } from "react";
 // import { set } from "zod";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface EditorProps {
+export interface EditorProps {
   onChange: (value: string) => void;
   initialContent?: string;
   editable?: boolean;
@@ -106,7 +107,7 @@ const Editor = ({
       onChangeDebounce(JSON.stringify(editor.topLevelBlocks, null, 2));
     },
     uploadFile: handleUpload,
-    collaboration,
+    // collaboration,
   });
 
   return (
@@ -115,6 +116,17 @@ const Editor = ({
         editor={editor}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
       />
+    </div>
+  );
+};
+
+export const EditorSkeleton = () => {
+  return (
+    <div className="px-[54px]">
+      <Skeleton className="h-[4.5rem] my-[0.1875rem] w-1/3" />
+      <Skeleton className="h-6 my-[0.1875rem] w-1/2" />
+      <Skeleton className="h-6 my-[0.1875rem] w-3/4" />
+      <Skeleton className="h-6 my-[0.1875rem] w-2/3" />
     </div>
   );
 };

@@ -142,6 +142,16 @@ export const deleteDocument = mutation({
         ctx.db.delete(sharedDocument._id);
       })
     );
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_document", (q) => q.eq("documentId", args.id))
+      .collect();
+    Promise.all(
+      messages.map((message) => {
+        ctx.db.delete(message._id);
+      })
+    );
+
     await ctx.db.delete(args.id);
 
     return document;

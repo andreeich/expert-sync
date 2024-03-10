@@ -33,6 +33,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           firstName: user.firstName!,
           lastName: user.lastName!,
           username: user.username!,
+          avatarUrl: user?.imageUrl,
         })
           .then(() => {
             localStorage.setItem(

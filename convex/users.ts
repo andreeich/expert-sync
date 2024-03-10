@@ -32,6 +32,7 @@ export const createUser = mutation({
     lastName: v.string(),
     email: v.string(),
     username: v.string(),
+    avatarUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const users = await ctx.db
