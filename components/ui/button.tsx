@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "text-base-white border border-brand-600 bg-brand-600 shadow-xs hover:border-brand-700 hover:bg-brand-700 focus-visible:shadow-ring-brand-xs disabled:text-gray-400 disabled:bg-gray-100 disabled:border-gray-200",
+          "text-base-white border border-brand-600 bg-brand-600 shadow-xs hover:border-brand-700 hover:bg-brand-700 focus-visible:shadow-ring-brand-xs disabled:text-gray-400 disabled:bg-gray-100 disabled:border-gray-200 dark:disabled:border-gray-700 dark:disabled:border-gray-800",
         secondary:
-          "text-gray-700 border border-gray-200 bg-base-white shadow-xs hover:text-gray-800 hover:bg-gray-50 focus-visible:shadow-ring-gray-xs disabled:text-gray-400 disabled:bg-base-white disabled:border-gray-200",
+          "text-gray-700 border border-gray-200 bg-base-white shadow-xs hover:text-gray-800 hover:bg-gray-50 focus-visible:shadow-ring-gray-xs disabled:text-gray-400 disabled:bg-base-white disabled:border-gray-200 dark:text-gray-300 dark:hover:text-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 dark:border-gray-800",
         "secondary color":
-          "text-brand-700 border border-brand-300 bg-brand-50 shadow-xs hover:text-brand-800 hover:bg-brand-100 focus-visible:shadow-ring-brand-xs disabled:text-gray-400 disabled:bg-base-white disabled:border-gray-200",
+          "text-brand-700 border border-brand-300 bg-brand-50 shadow-xs hover:text-brand-800 hover:bg-brand-100 focus-visible:shadow-ring-brand-xs disabled:text-gray-400 disabled:bg-base-white disabled:border-gray-200 dark:text-gray-300 dark:hover:text-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 dark:border-gray-800",
         "tertiary gray":
-          "text-gray-600 hover:bg-gray-50 disabled:text-gray-400",
+          "text-gray-600 hover:bg-gray-50 disabled:text-gray-400 dark:text-gray-400 dark:hover:text-gray-200 dark:bg-gray-800",
         "tertiary color":
-          "text-brand-700 hover:text-brand-800 hover:bg-gray-50 disabled:text-gray-400",
+          "text-brand-700 hover:text-brand-800 hover:bg-gray-50 disabled:text-gray-400 dark:text-gray-300 dark:hover:text-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800",
       },
       size: {
         sm: "text-sm/sm px-3 py-2 gap-1",

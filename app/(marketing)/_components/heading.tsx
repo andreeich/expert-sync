@@ -1,7 +1,6 @@
 "use client";
 
 import { useConvexAuth } from "convex/react";
-import { ArrowRight } from "lucide-react";
 import { SignInButton } from "@clerk/clerk-react";
 import Link from "next/link";
 
@@ -14,11 +13,11 @@ export const Heading = () => {
   return (
     <div className="max-w-3xl space-y-8">
       <div className="space-y-4 ">
-        <h1 className="text-display-xl/display-xl font-semibold tracking-tight text-gray-900">
+        <h1 className="text-display-xl/display-xl font-semibold tracking-tight text-gray-900 dark:text-gray-50">
           Welcome to{" "}
           <span className="underline">Keeem Communication System</span>
         </h1>
-        <h3 className="text-display-xs/display-xs font-semibold tracking-tight text-gray-600">
+        <h3 className="text-display-xs/display-xs font-semibold tracking-tight text-gray-600 dark:text-gray-400">
           KCS is the connected workspace where <br />
           better, faster work happens.
         </h3>

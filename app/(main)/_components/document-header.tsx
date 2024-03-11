@@ -207,7 +207,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
-            <h1 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold text-gray-900 line-clamp-1 break-all">
+            <h1 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold text-gray-900 dark:text-gray-50 line-clamp-1 break-all">
               {document.title}
             </h1>
           </TooltipTrigger>
@@ -244,14 +244,14 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
                 ))
               ) : (
                 <div className="flex items-center px-4 py-2 h-[3.25rem]">
-                  <p className="text-sm/sm text-gray-900 font-medium">
+                  <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
                     No members yet
                   </p>
                 </div>
               )}
               <ScrollBar orientation="vertical" />
             </ScrollArea>
-            <hr className="text-gray-200" />
+            <hr className="border-gray-200 dark:border-gray-800" />
             <section className="px-4 py-3 flex items-center">
               <Input
                 ref={memberEmailRef}
@@ -334,7 +334,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
               </AlertDialog>
             )}
 
-            <hr className="text-gray-200" />
+            <hr className="border-gray-200 dark:border-gray-800 my-1" />
             {isOwner ? (
               <DropdownItem
                 title="Delete"

@@ -37,7 +37,7 @@ const TemplateItem = ({ name, icon, onClick, onRemove }: TemplateItemProps) => {
   return (
     <div className="relative w-fit h-fit">
       <button
-        className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 flex flex-col items-center justify-center transition-all text-gray-900 bg-base-white hover:bg-gray-50 focus-visible:shadow-ring-gray-xs outline-none"
+        className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center transition-all text-gray-900 dark:text-gray-50 bg-base-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:shadow-ring-gray-xs outline-none"
         onClick={(e) => onClick(e, name)}
       >
         <Icon variant={icon} />
@@ -61,7 +61,7 @@ const TemplateItem = ({ name, icon, onClick, onRemove }: TemplateItemProps) => {
 
 TemplateItem.Skeleton = function TemplateItemSkeleton() {
   return (
-    <Skeleton className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 bg-base-white" />
+    <Skeleton className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 bg-base-white dark:bg-gray-950" />
   );
 };
 
@@ -115,10 +115,10 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="p-4 md:p-8">
         <header className="space-y-2 pb-3">
-          <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900">
+          <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900 dark:text-gray-50">
             Choose a template
           </h3>
-          <p className="text-md/md md:text-sm/sm text-gray-600">
+          <p className="text-md/md md:text-sm/sm text-gray-600 dark:text-gray-400">
             Choose one of the existing templates or create a blank document.
           </p>
         </header>
@@ -135,7 +135,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
             ))}
           </div>
         ) : (
-          <p className="text-lg/lg md:text-md/md text-gray-300 font-medium">
+          <p className="text-lg/lg md:text-md/md text-gray-300 dark:text-gray-700 font-medium">
             No templates found.
           </p>
         )}
@@ -148,7 +148,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
             <TemplateItem.Skeleton />
           </div>
         )}
-        <h4 className="text-lg/lg md:text-xl/xl font-semibold text-gray-900">
+        <h4 className="text-lg/lg md:text-xl/xl font-semibold text-gray-900 dark:text-gray-50">
           Your templates
         </h4>
         {userTemplates?.length ? (
@@ -164,7 +164,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
             ))}
           </div>
         ) : (
-          <p className="text-lg/lg md:text-md/md text-gray-300 font-medium">
+          <p className="text-lg/lg md:text-md/md text-gray-300 dark:text-gray-700 font-medium">
             No templates found.
           </p>
         )}

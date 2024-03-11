@@ -81,7 +81,7 @@ export const Chat = ({ documentId }: ChatProps) => {
               ))
             ) : (
               <div className="flex items-center h-10">
-                <p className="text-sm/sm text-gray-900 font-medium">
+                <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
                   No messages yet
                 </p>
               </div>
@@ -89,7 +89,7 @@ export const Chat = ({ documentId }: ChatProps) => {
           </div>
           <ScrollBar orientation="vertical" />
         </ScrollArea>
-        <hr className="text-gray-200" />
+        <hr className="border-gray-200 dark:border-gray-800" />
         <section className="px-4 py-3 flex items-center">
           <Input
             ref={messageRef}

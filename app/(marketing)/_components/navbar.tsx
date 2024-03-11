@@ -11,16 +11,18 @@ import { Spinner } from "@/components/spinner";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 export const Navbar = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const scrolled = useScrollTop();
   const router = useRouter();
+  const theme = useTheme();
 
   return (
     <div
       className={cn(
-        "z-50 bg-base-white  fixed top-0 w-full h-[4rem] md:h-[5rem] border-b border-gray-200"
+        "z-50 bg-base-white dark:bg-gray-950 fixed top-0 w-full h-[4rem] md:h-[5rem] border-b border-gray-200 dark:border-gray-800"
         // scrolled && "border-b border-gray-200 shadow-sm"
       )}
     >
@@ -30,7 +32,12 @@ export const Navbar = () => {
           size="sm"
           onClick={() => router.push("/")}
         >
-          <Image src="/logo.svg" width={80} height={32} alt="KCS" />
+          <Image
+            src={theme.theme === "light" ? "/logo.svg" : "/logo-white.svg"}
+            width={80}
+            height={32}
+            alt="KCS"
+          />
         </Button>
         <div className="md:ml-auto md:justify-end justify-between flex items-center gap-x-2">
           {isLoading && <Spinner />}

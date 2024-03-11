@@ -19,6 +19,7 @@ import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 import { useTemplateDialog } from "@/hooks/use-template-dialog";
 import { ArchiveDialog } from "./archive-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useTheme } from "next-themes";
 
 interface NavItemProps {
   label: string;
@@ -32,8 +33,8 @@ const NavItem = React.forwardRef<HTMLButtonElement, NavItemProps>(
     return (
       <button
         className={cn(
-          "flex items-center py-2 px-3 gap-2 w-full h-10 bg-base-white rounded-md hover:bg-gray-50 focus-visible:outline-none focus-visible:shadow-ring-gray transition-all",
-          active && "bg-gray-50"
+          "flex items-center py-2 px-3 gap-2 w-full h-10 bg-base-white dark:bg-gray-950 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:shadow-ring-gray transition-all",
+          active && "bg-gray-50 dark:bg-gray-800"
         )}
         onClick={onClick}
         ref={ref}
@@ -43,7 +44,7 @@ const NavItem = React.forwardRef<HTMLButtonElement, NavItemProps>(
             className="fill-gray-500"
             variant={iconVariant ? iconVariant : "file-04"}
           />
-          <span className="text-md/md font-semibold text-gray-700 line-clamp-1 break-all">
+          <span className="text-md/md font-semibold text-gray-700 dark:text-gray-300 line-clamp-1 break-all">
             {label}
           </span>
         </span>
@@ -54,7 +55,7 @@ const NavItem = React.forwardRef<HTMLButtonElement, NavItemProps>(
 
 const NavItemSkeleton = () => {
   return (
-    <div className="flex items-center py-2 px-3 gap-3 w-full h-10 bg-base-white rounded-md">
+    <div className="flex items-center py-2 px-3 gap-3 w-full h-10 bg-base-white dark:bg-gray-950 rounded-md">
       <Skeleton className="w-6 h-6" />
       <Skeleton className="w-20 h-4" />
     </div>
@@ -114,7 +115,7 @@ const NavItemList = ({ search }: NavItemListProps) => {
             );
           })
       ) : (
-        <p className="flex items-center py-2 px-3 gap-2 w-full h-10 text-md/md font-semibold text-gray-300">
+        <p className="flex items-center py-2 px-3 gap-2 w-full h-10 text-md/md font-semibold text-gray-300 dark:text-gray-700">
           No documents
         </p>
       )}
@@ -132,28 +133,25 @@ const Account = ({ className }: AccountProps) => {
   return (
     <div
       className={cn(
-        "flex gap-4 pl-2 pt-6 items-center justify-between border-t border-gray-200",
+        "flex gap-4 pl-2 pt-6 items-center justify-between border-t border-gray-200 dark:border-gray-800",
         className
       )}
     >
       <div className="flex gap-3">
         <div className="rounded-full overflow-clip flex-shrink-0">
-          {user?.imageUrl ? (
-            <Image
-              src={user?.imageUrl || "/avatar-placeholder.svg"}
-              width={40}
-              height={40}
-              alt="user image"
-            />
-          ) : (
-            <div className="bg-gray-300"></div>
-          )}
+          <Image
+            src={user?.imageUrl || "/avatar-placeholder.svg"}
+            width={40}
+            height={40}
+            alt="user image"
+            className="rounded-full"
+          />
         </div>
         <div className="w-full">
-          <p className="text-sm/sm text-gray-700 font-semibold line-clamp-1 break-all">
+          <p className="text-sm/sm text-gray-700 dark:text-gray-300 font-semibold line-clamp-1 break-all">
             {user?.fullName || "Anonymous"}
           </p>
-          <p className="text-sm/sm text-gray-600 line-clamp-1 break-all">
+          <p className="text-sm/sm text-gray-600 dark:text-400 line-clamp-1 break-all">
             {user?.emailAddresses[0].emailAddress || "anonymous@email.com"}
           </p>
         </div>
@@ -174,7 +172,7 @@ const Account = ({ className }: AccountProps) => {
 
 Account.Skeleton = function AccountSkeleton() {
   return (
-    <div className="flex gap-4 pl-2 pt-6 items-center justify-between border-t border-gray-200">
+    <div className="flex gap-4 pl-2 pt-6 items-center justify-between border-t border-gray-200 dark:border-gray-800">
       <div className="flex gap-3">
         <Skeleton className="w-10 h-10 rounded-full" />
         <div className="w-full">
@@ -190,9 +188,10 @@ Account.Skeleton = function AccountSkeleton() {
 const Sidebar = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const theme = useTheme();
 
   return (
-    <aside className="h-full flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 max-h-screen">
+    <aside className="h-full flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 dark:border-gray-800 max-h-screen">
       <header className="space-y-5 md:space-y-6 pt-4 md:pt-8">
         <div className="px-4 md:pl-6 md:pr-5">
           <Button
@@ -200,7 +199,12 @@ const Sidebar = () => {
             size="sm"
             onClick={() => router.push("/")}
           >
-            <Image src="/logo.svg" width={80} height={32} alt="KCS" />
+            <Image
+              src={theme.theme === "light" ? "/logo.svg" : "/logo-white.svg"}
+              width={80}
+              height={32}
+              alt="KCS"
+            />
           </Button>
         </div>
         <div className="px-4 md:px-6">

@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
-import { ModalProvider } from "@/components/providers/modal-provider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 
 import "./globals.css";
@@ -40,17 +39,16 @@ export default function RootLayout({
       <body className={inter.className}>
         <ConvexClientProvider>
           <EdgeStoreProvider>
-            {/* <ThemeProvider
+            <ThemeProvider
               attribute="class"
               defaultTheme="system"
               enableSystem
               disableTransitionOnChange
-              storageKey="kcs-theme"
-            > */}
-            <Toaster position="bottom-center" />
-            <ModalProvider />
-            {children}
-            {/* </ThemeProvider> */}
+              storageKey="theme"
+            >
+              <Toaster position="bottom-center" />
+              {children}
+            </ThemeProvider>
           </EdgeStoreProvider>
         </ConvexClientProvider>
       </body>

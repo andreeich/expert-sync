@@ -8,7 +8,6 @@ import { useEffect, useMemo } from "react";
 
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
-import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";

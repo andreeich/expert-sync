@@ -11,16 +11,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       // theme={theme as ToasterProps["theme"]}
-      className="toaster group text-sm/sm shadow-sm text-gray-900 font-medium border-gray-200"
+      className="toaster group text-sm/sm shadow-sm bg-base-white dark:bg-gray-950 text-gray-900 dark:text-gray-50 font-medium border-gray-200 dark:border-gray-800"
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
+            "group toast group-[.toaster]:bg-base-white group-[.toaster]:dark:bg-gray-950 group-[.toaster]:text-gray-900 group-[.toaster]:dark:text-gray-50 group-[.toaster]:border-gray-200 group-[.toaster]:dark:border-gray-800 group-[.toaster]:shadow-lg",
+          description:
+            "group-[.toast]:text-gray-600 group-[.toast]:dark:text-gray-400",
           actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+            "group-[.toast]:bg-brand-600 group-[.toast]:dark:bg-brand-500  group-[.toast]:text-base-white group-[.toast]:dark:text-gray-50",
           cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+            "group-[.toast]:bg-gray-100 group-[.toast]:dark:bg-gray-800 group-[.toast]:text-gray-500 group-[.toast]:dark:text-gray-500",
         },
       }}
       {...props}

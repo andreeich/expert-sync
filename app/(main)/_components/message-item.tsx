@@ -20,10 +20,10 @@ export const MessageItem = ({ name, content, avatarUrl }: MessageItemProps) => {
         height={40}
       />
       <div className="w-fit">
-        <p className="text-sm/sm text-gray-700 font-semibold w-fit  hyphens-auto">
+        <p className="text-sm/sm text-gray-700 dark:text-gray-300 font-semibold w-fit  hyphens-auto">
           {name}
         </p>
-        <p className="text-sm/sm text-gray-600 w-fit  hyphens-auto">
+        <p className="text-sm/sm text-gray-600 dark:text-gray-400 w-fit  hyphens-auto">
           {content}
         </p>
       </div>

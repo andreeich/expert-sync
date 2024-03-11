@@ -37,10 +37,12 @@ const DocumentItem = ({
   return (
     <div
       onClick={onClick}
-      className="flex gap-3 px-2 md:px-6 py-1 my-1 mx-2 items-center justify-between border-b border-gray-200 last:border-b-0 hover:cursor-pointer bg-base-white hover:bg-gray-50 transition-colors rounded-lg "
+      className="flex gap-3 px-2 md:px-6 py-1 my-1 mx-2 items-center justify-between border-b border-gray-200 dark:border-gray-800 last:border-b-0 hover:cursor-pointer bg-base-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg "
     >
-      <p className="text-sm/sm text-gray-900 font-medium">{title}</p>
-      <span className="flex items-center">
+      <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
+        {title}
+      </p>
+      <span className="flex items-center space-x-1">
         <Button onClick={onRestore} variant="tertiary gray" size="icon-sm">
           <Icon variant="refresh-ccw-01" />
         </Button>
@@ -111,10 +113,10 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <header className="space-y-2 px-4 md:px-8 pt-4 md:pt-8">
-          <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900">
+          <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900 dark:text-gray-50">
             Trash Documents
           </h3>
-          <p className="text-md/md md:text-sm/sm text-gray-600">
+          <p className="text-md/md md:text-sm/sm text-gray-600 dark:text-gray-400">
             Restore or delete documents from the trash.
           </p>
         </header>
@@ -127,7 +129,7 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
               onChange={(e) => setSearch(e.target.value)}
             />
           </section>
-          <hr className="text-gray-200" />
+          <hr className="border-gray-200 dark:border-gray-800" />
           <ScrollArea className="w-full h-[13rem]">
             {archivedDocuments?.length ? (
               archivedDocuments
@@ -143,7 +145,7 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
                 ))
             ) : (
               <div className="flex items-center px-4 md:px-8 py-2 h-[3.25rem]">
-                <p className="text-sm/sm text-gray-900 font-medium">
+                <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
                   No documents found
                 </p>
               </div>

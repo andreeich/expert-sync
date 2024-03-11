@@ -39,3 +39,40 @@
     "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   --bn-border-radius: 6px;
 }
+.bn-container[data-color-scheme="dark"] {
+  --bn-colors-editor-text: #f9fafb; /* gray-50 */
+  --bn-colors-menu-text: #f9fafb;
+  --bn-colors-tooltip-text: #f9fafb;
+  --bn-colors-hovered-text: #f9fafb;
+  --bn-colors-selected-background: #f9fafb;
+
+  --bn-colors-disabled-text: #98a2b3; /* gray-400 */
+  --bn-colors-disabled-background: #182230; /* gray-50 */
+
+  --bn-colors-editor-background: #0c111d; /* gray-950 */
+  --bn-colors-menu-background: #0c111d;
+  --bn-colors-selected-text: #0c111d;
+
+  --bn-colors-tooltip-background: #101828; /* gray-900 */
+  --bn-colors-hovered-background: #101828; /* gray-900 */
+
+  --bn-colors-shadow: #344054; /* gray-700 */
+  --bn-colors-border: #182230; /* gray-800 */
+  --bn-colors-side-menu: #667085; /* gray-500 */
+  --bn-colors-highlights-gray-text: #d0d5dd; /* gray-300 */
+  --bn-colors-highlights-gray-background: #182230; /* gray-800 */
+  --bn-colors-highlights-red-text: #fda29b; /* error-300 */
+  --bn-colors-highlights-red-background: #912018;
+  --bn-colors-highlights-orange-text: #f7b27a;
+  --bn-colors-highlights-orange-background: #932f19;
+  --bn-colors-highlights-yellow-text: #fde272;
+  --bn-colors-highlights-yellow-background: #854a0e;
+  --bn-colors-highlights-green-text: #73e2a3;
+  --bn-colors-highlights-green-background: #095c37;
+  --bn-colors-highlights-blue-text: #84caff;
+  --bn-colors-highlights-blue-background: #1849a9;
+  --bn-colors-highlights-purple-text: #bdb4fe;
+  --bn-colors-highlights-purple-background: #4a1fb8;
+  --bn-colors-highlights-pink-text: #faa7e0;
+  --bn-colors-highlights-pink-background: #9e165f;
+}
