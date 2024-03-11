@@ -27,6 +27,10 @@ body {
   @apply bg-base-white dark:bg-gray-950;
 }
 
+.cl-modalBackdrop {
+  @apply z-[99999];
+}
+
 /* @layer base {
   :root {
     --background: 0 0% 100%;

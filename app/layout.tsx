@@ -37,20 +37,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ConvexClientProvider>
-          <EdgeStoreProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-              storageKey="theme"
-            >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="theme"
+        >
+          <ConvexClientProvider>
+            <EdgeStoreProvider>
               <Toaster position="bottom-center" />
               {children}
-            </ThemeProvider>
-          </EdgeStoreProvider>
-        </ConvexClientProvider>
+            </EdgeStoreProvider>
+          </ConvexClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -37,7 +37,7 @@ const DocumentsPage = () => {
         <h2 className="text-display-md/display-md md:text-display-xl/display-xl font-semibold tracking-tight">
           No documents yet!
         </h2>
-        <p className="text-lg/lg md:text-xl/xl text-gray-600">
+        <p className="text-lg/lg md:text-xl/xl text-gray-600 dark:text-gray-400">
           Empty canvas, ready to be filled. Let&apos;s get to work!
         </p>
       </div>

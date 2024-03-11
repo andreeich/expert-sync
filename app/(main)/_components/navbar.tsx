@@ -24,7 +24,9 @@ const Navbar = () => {
           onClick={() => router.push("/")}
         >
           <Image
-            src={theme.theme === "light" ? "/logo.svg" : "/logo-white.svg"}
+            src={
+              theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
+            }
             width={80}
             height={32}
             alt="KCS"

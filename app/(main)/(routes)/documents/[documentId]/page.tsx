@@ -16,6 +16,7 @@ import { Spinner } from "@/components/spinner";
 import { DocumentHeader } from "../../../_components/document-header";
 import { EditorSkeleton } from "@/components/editor/editor";
 import { Chat } from "../../../_components/chat";
+import { Banner } from "@/app/(main)/_components/banner";
 
 interface DocumentIdPageProps {
   params: {
@@ -57,26 +58,29 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   }, [router]);
 
   return (
-    <main className="space-y-6 md:space-y-8 pt-24 md:pt-8 pb-12 relative h-full">
-      {doc ? (
-        <>
-          <DocumentHeader document={doc} />
-          <Editor
-            onChange={onChangeContent}
-            initialContent={doc.content}
-            username={user?.fullName || "Anonymous"}
-            room={doc._id}
-          />
-          <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8">
-            <Chat documentId={doc._id} />
-          </div>
-        </>
-      ) : (
-        <>
-          <DocumentHeader.Skeleton />
-          <EditorSkeleton />
-        </>
-      )}
+    <main className="h-full flex flex-col pt-16 md:pt-0">
+      {doc && doc.isArchived && <Banner documentId={doc._id} />}
+      <section className="space-y-6 md:space-y-8 pt-8 pb-12 relative flex-1">
+        {doc ? (
+          <>
+            <DocumentHeader document={doc} />
+            <Editor
+              onChange={onChangeContent}
+              initialContent={doc.content}
+              username={user?.fullName || "Anonymous"}
+              room={doc._id}
+            />
+            <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8">
+              <Chat documentId={doc._id} />
+            </div>
+          </>
+        ) : (
+          <>
+            <DocumentHeader.Skeleton />
+            <EditorSkeleton />
+          </>
+        )}
+      </section>
     </main>
   );
 };

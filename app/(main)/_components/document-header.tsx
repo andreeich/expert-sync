@@ -138,7 +138,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
       error: "Failed to archive document.",
     });
 
-    router.push("/documents");
+    // router.push("/documents");
   };
 
   const onRename = () => {

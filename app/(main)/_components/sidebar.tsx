@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
-import { SignOutButton, useUser } from "@clerk/clerk-react";
+import { SignOutButton, useClerk, useUser } from "@clerk/clerk-react";
 
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/icon";
@@ -151,7 +151,7 @@ const Account = ({ className }: AccountProps) => {
           <p className="text-sm/sm text-gray-700 dark:text-gray-300 font-semibold line-clamp-1 break-all">
             {user?.fullName || "Anonymous"}
           </p>
-          <p className="text-sm/sm text-gray-600 dark:text-400 line-clamp-1 break-all">
+          <p className="text-sm/sm text-gray-600 dark:text-gray-400 line-clamp-1 break-all">
             {user?.emailAddresses[0].emailAddress || "anonymous@email.com"}
           </p>
         </div>
@@ -189,6 +189,13 @@ const Sidebar = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const theme = useTheme();
+  const clerk = useClerk();
+  const sidebarSheet = useSidebarSheet();
+
+  const openSettings = () => {
+    sidebarSheet.onClose();
+    clerk.openUserProfile();
+  };
 
   return (
     <aside className="h-full flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 dark:border-gray-800 max-h-screen">
@@ -200,7 +207,11 @@ const Sidebar = () => {
             onClick={() => router.push("/")}
           >
             <Image
-              src={theme.theme === "light" ? "/logo.svg" : "/logo-white.svg"}
+              src={
+                theme.resolvedTheme === "light"
+                  ? "/logo.svg"
+                  : "/logo-white.svg"
+              }
               width={80}
               height={32}
               alt="KCS"
@@ -234,7 +245,11 @@ const Sidebar = () => {
           <ArchiveDialog>
             <NavItem label="Trash" iconVariant="trash-01" />
           </ArchiveDialog>
-          <NavItem label="Settings" iconVariant="settings-01" />
+          <NavItem
+            label="Settings"
+            iconVariant="settings-01"
+            onClick={openSettings}
+          />
         </nav>
         <Account />
       </footer>

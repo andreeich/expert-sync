@@ -16,9 +16,13 @@ const buttonVariants = cva(
         "secondary color":
           "text-brand-700 border border-brand-300 bg-brand-50 shadow-xs hover:text-brand-800 hover:bg-brand-100 focus-visible:shadow-ring-brand-xs disabled:text-gray-400 disabled:bg-base-white disabled:border-gray-200 dark:text-gray-300 dark:hover:text-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 dark:border-gray-800",
         "tertiary gray":
-          "text-gray-600 hover:bg-gray-50 disabled:text-gray-400 dark:text-gray-400 dark:hover:text-gray-200 dark:bg-gray-800",
+          "text-gray-600 hover:bg-gray-50 disabled:text-gray-400 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800",
         "tertiary color":
           "text-brand-700 hover:text-brand-800 hover:bg-gray-50 disabled:text-gray-400 dark:text-gray-300 dark:hover:text-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800",
+        "destructive primary":
+          "text-base-white border border-error-600 bg-error-600 shadow-xs hover:border-error-700 hover:bg-error-700 focus-visible:shadow-ring-error-xs disabled:text-gray-400 disabled:bg-gray-100 disabled:border-gray-200 dark:disabled:border-gray-700 dark:disabled:border-gray-800",
+        "destructive tertiary":
+          "text-error-700 hover:text-error-800 disabled:text-gray-400 dark:text-error-300 dark:hover:text-error-200",
       },
       size: {
         sm: "text-sm/sm px-3 py-2 gap-1",
