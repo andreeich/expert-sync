@@ -10,8 +10,8 @@
     "convex": "bunx convex dev"
   },
   "dependencies": {
-    "@blocknote/core": "latest",
-    "@blocknote/react": "latest",
+    "@blocknote/core": "0.12.0",
+    "@blocknote/react": "0.12.0",
     "@clerk/clerk-react": "^4.26.3",
     "@clerk/themes": "^1.7.9",
     "@edgestore/react": "^0.1.4",
