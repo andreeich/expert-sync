@@ -27,30 +27,48 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const storageEmail = localStorage.getItem("accountEmail");
     if (isAuthenticated && user) {
-      if (storageEmail !== user.emailAddresses[0].emailAddress) {
-        addUser({
-          email: user.emailAddresses[0].emailAddress!,
-          firstName: user.firstName!,
-          lastName: user.lastName!,
-          username: user.username!,
-          avatarUrl: user?.imageUrl,
+      addUser({
+        email: user.emailAddresses[0].emailAddress!,
+        firstName: user.firstName!,
+        lastName: user.lastName!,
+        username: user.username!,
+        avatarUrl: user?.imageUrl,
+      })
+        .then(() => {
+          localStorage.setItem(
+            "accountEmail",
+            user.emailAddresses[0].emailAddress!
+          );
+          setIsUserAdded(true);
         })
-          .then(() => {
-            localStorage.setItem(
-              "accountEmail",
-              user.emailAddresses[0].emailAddress!
-            );
-            setIsUserAdded(true);
-          })
-          .catch(() => {
-            localStorage.removeItem("accountEmail");
-            setIsUserAdded(false);
-          });
-      } else {
-        setIsUserAdded(true);
-      }
+        .catch(() => {
+          localStorage.removeItem("accountEmail");
+          setIsUserAdded(false);
+        });
+      // if (storageEmail !== user.emailAddresses[0].emailAddress) {
+      //   addUser({
+      //     email: user.emailAddresses[0].emailAddress!,
+      //     firstName: user.firstName!,
+      //     lastName: user.lastName!,
+      //     username: user.username!,
+      //     avatarUrl: user?.imageUrl,
+      //   })
+      //     .then(() => {
+      //       localStorage.setItem(
+      //         "accountEmail",
+      //         user.emailAddresses[0].emailAddress!
+      //       );
+      //       setIsUserAdded(true);
+      //     })
+      //     .catch(() => {
+      //       localStorage.removeItem("accountEmail");
+      //       setIsUserAdded(false);
+      //     });
+      // } else {
+      //   setIsUserAdded(true);
+      // }
     }
-  }, [user, isAuthenticated, addUser]);
+  }, [user, isAuthenticated]);
 
   if (isLoading || isUserAdded) {
     return (
