@@ -7,12 +7,7 @@ import "@blocknote/react/style.css";
 import "./editor.css";
 
 import { useEdgeStore } from "@/lib/edgestore";
-import * as Y from "yjs";
-import YPartyKitProvider from "y-partykit/provider";
-// import useYProvider from "y-partykit/react";
 import { useDebounceCallback } from "usehooks-ts";
-// import { useEffect, useMemo, useState } from "react";
-// import { set } from "zod";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export interface EditorProps {
