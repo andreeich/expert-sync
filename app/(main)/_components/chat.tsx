@@ -14,6 +14,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { MessageItem } from "./message-item";
 import { Spinner } from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChatProps {
   documentId: Id<"documents">;
@@ -94,4 +95,8 @@ export const Chat = ({ documentId }: ChatProps) => {
       </PopoverContent>
     </Popover>
   );
+};
+
+Chat.Skeleton = function ChatSkeleton() {
+  return <Skeleton className="w-10 h-10 rounded-lg" />;
 };

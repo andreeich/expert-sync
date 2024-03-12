@@ -36,9 +36,9 @@ export const Navbar = () => {
             src={
               theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
             }
-            width={80}
+            width={161}
             height={32}
-            alt="KCS"
+            alt="ExpertSync"
           />
         </Button>
         <div className="md:ml-auto md:justify-end justify-between flex items-center gap-x-2">

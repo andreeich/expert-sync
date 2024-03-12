@@ -78,6 +78,9 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
           <>
             <DocumentHeader.Skeleton />
             <EditorSkeleton />
+            <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8">
+              <Chat.Skeleton />
+            </div>
           </>
         )}
       </section>

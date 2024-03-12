@@ -27,9 +27,9 @@ const Navbar = () => {
             src={
               theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
             }
-            width={80}
+            width={161}
             height={32}
-            alt="KCS"
+            alt="ExpertSync"
           />
         </Button>
         <Sheet open={sidebarSheet.isOpen} onOpenChange={sidebarSheet.onToggle}>

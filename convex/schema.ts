@@ -26,7 +26,7 @@ export default defineSchema({
   templates: defineTable({
     name: v.string(),
     icon: v.string(),
-    content: v.string(),
+    content: v.optional(v.string()),
     isGeneral: v.boolean(),
     userId: v.optional(v.id("users")),
   })

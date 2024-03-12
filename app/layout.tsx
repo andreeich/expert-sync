@@ -11,7 +11,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Keeem Communication System",
+  title: "ExpertSync",
   description: "The connected workspace where better, faster work happens.",
   icons: {
     icon: [

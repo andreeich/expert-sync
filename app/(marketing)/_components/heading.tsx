@@ -18,7 +18,7 @@ export const Heading = () => {
           <span className="underline">Keeem Communication System</span>
         </h1>
         <h3 className="text-display-xs/display-xs font-semibold tracking-tight text-gray-600 dark:text-gray-400">
-          KCS is the connected workspace where <br />
+          ExpertSync is the connected workspace where <br />
           better, faster work happens.
         </h3>
       </div>

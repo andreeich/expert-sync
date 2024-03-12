@@ -15,12 +15,12 @@ export const Footer = () => {
           src={
             theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
           }
-          width={80}
+          width={161}
           height={32}
-          alt="KCS"
+          alt="ExpertSync"
         />
         <p className="text-md/md text-gray-500">
-          © 2024 KCS. All rights reserved.
+          © 2024 ExpertSync. All rights reserved.
         </p>
       </div>
     </footer>

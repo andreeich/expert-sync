@@ -212,9 +212,9 @@ const Sidebar = () => {
                   ? "/logo.svg"
                   : "/logo-white.svg"
               }
-              width={80}
+              width={161}
               height={32}
-              alt="KCS"
+              alt="ExpertSync"
             />
           </Button>
         </div>
