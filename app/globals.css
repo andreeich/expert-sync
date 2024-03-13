@@ -32,7 +32,7 @@ body {
 }
 
 .bn-container .bn-image-toolbar {
-  @apply !max-w-[500px] !w-[calc(100vw_-_32px)] !min-w-none;
+  @apply !max-w-[500px] !w-[calc(100vw_-_32px)];
 }
 /* @layer base {
   :root {
