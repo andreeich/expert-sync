@@ -24,6 +24,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [isUserAdded, setIsUserAdded] = useState(false);
   const isMd = useMediaQuery("(max-width: 768px)");
 
+  // TODO: Fix create user on login
+  // TODO: change users table to clerk backend sdk using @clerk/nextjs
+
   useEffect(() => {
     const storageEmail = localStorage.getItem("accountEmail");
     if (isAuthenticated && user) {
