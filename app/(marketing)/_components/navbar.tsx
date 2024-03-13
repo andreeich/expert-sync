@@ -27,11 +27,7 @@ export const Navbar = () => {
       )}
     >
       <div className="container flex items-center justify-between h-full w-full">
-        <Button
-          variant="tertiary gray"
-          size="sm"
-          onClick={() => router.push("/")}
-        >
+        <Link href="/">
           <Image
             src={
               theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
@@ -40,7 +36,7 @@ export const Navbar = () => {
             height={32}
             alt="ExpertSync"
           />
-        </Button>
+        </Link>
         <div className="md:ml-auto md:justify-end justify-between flex items-center gap-x-2">
           {isLoading && <Spinner />}
           {!isAuthenticated && !isLoading && (

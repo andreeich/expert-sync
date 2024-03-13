@@ -20,6 +20,7 @@ import { useTemplateDialog } from "@/hooks/use-template-dialog";
 import { ArchiveDialog } from "./archive-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 interface NavItemProps {
   label: string;
@@ -201,11 +202,7 @@ const Sidebar = () => {
     <aside className="h-full flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 dark:border-gray-800 max-h-screen">
       <header className="space-y-5 md:space-y-6 pt-4 md:pt-8">
         <div className="px-4 md:pl-6 md:pr-5">
-          <Button
-            variant="tertiary gray"
-            size="sm"
-            onClick={() => router.push("/")}
-          >
+          <Link href="/">
             <Image
               src={
                 theme.resolvedTheme === "light"
@@ -216,7 +213,7 @@ const Sidebar = () => {
               height={32}
               alt="ExpertSync"
             />
-          </Button>
+          </Link>
         </div>
         <div className="px-4 md:px-6">
           <Input

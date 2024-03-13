@@ -7,7 +7,7 @@ import "@blocknote/react/style.css";
 import "./editor.css";
 
 import { useEdgeStore } from "@/lib/edgestore";
-import { useDebounceCallback } from "usehooks-ts";
+import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export interface EditorProps {
@@ -27,6 +27,7 @@ const Editor = ({
 }: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
+  const isMd = useMediaQuery("(max-width: 768px)");
 
   const onChangeDebounce = useDebounceCallback(
     (data: string) => onChange(data),
@@ -58,6 +59,7 @@ const Editor = ({
           onChange={() => {
             onChangeDebounce(JSON.stringify(editor.document, null, 2));
           }}
+          sideMenu={isMd ? false : true}
         />
       )}
     </div>

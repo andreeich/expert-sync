@@ -60,10 +60,10 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
   const updateTitle = useMutation(api.documents.updateDocumentTitle);
   const addTemplate = useMutation(api.templates.addTemplate);
   const archive = useMutation(api.documents.archiveDocument);
-  const currentUser = useQuery(api.users.getUserByEmail, {
-    email: user?.emailAddresses[0].emailAddress || "",
-  });
   const allMembers = useQuery(api.documents.getMembersByDocument, {
+    documentId,
+  });
+  const role = useQuery(api.documents.getDocumentRole, {
     documentId,
   });
   const userTemplatesNames = useQuery(api.templates.getUserTemplates)?.map(
@@ -87,7 +87,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
-  const isOwner = document.userId === currentUser?._id;
+  const isOwner = role === "owner";
 
   const onAddNewMember = () => {
     if (memberEmail === "") return;
@@ -116,10 +116,10 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
     }
   };
 
-  const onRemoveMember = (userId: Doc<"users">["_id"]) => {
+  const onRemoveMember = (userTokenId: string) => {
     const promise = removeMember({
       documentId,
-      userId,
+      userTokenId,
     });
 
     toast.promise(promise, {
@@ -203,7 +203,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
   };
 
   return (
-    <header className="flex items-center gap-2 justify-between pl-[3.375rem] pr-4 md:px-[3.375rem]">
+    <header className="flex items-center gap-2 justify-between px-4 md:px-[3.375rem]">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
@@ -237,9 +237,9 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
               {allMembers?.length ? (
                 allMembers?.map((member) => (
                   <MemberItem
-                    key={member!._id}
+                    key={member!.tokenIdentifier}
                     email={member?.email || "No email"}
-                    onRemove={() => onRemoveMember(member!._id)}
+                    onRemove={() => onRemoveMember(member!.tokenIdentifier)}
                   />
                 ))
               ) : (
@@ -345,7 +345,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
               <DropdownItem
                 title="Disconnect"
                 icon="log-out-01"
-                onClick={() => onRemoveMember(currentUser?._id!)}
+                onClick={() => onRemoveMember(user!.id)}
               />
             )}
           </DropdownMenuContent>

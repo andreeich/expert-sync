@@ -58,11 +58,11 @@ export const Chat = ({ documentId }: ChatProps) => {
         <ScrollArea className="w-full h-[13rem]">
           <div className="p-4 space-y-4">
             {getMessages?.length ? (
-              getMessages?.map((member) => (
+              getMessages?.map((member, key) => (
                 <MessageItem
-                  key={member._id}
-                  name={member.user?.fullName || "Anonymous"}
-                  avatarUrl={member.user?.avatarUrl}
+                  key={key}
+                  name={member.user?.name || "Anonymous"}
+                  avatarUrl={member.user?.picture}
                   content={member.content}
                 />
               ))

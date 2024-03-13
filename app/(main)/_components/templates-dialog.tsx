@@ -23,9 +23,11 @@ import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 interface TemplateItemProps {
   name: string;
   icon: string;
+  content?: string;
   onClick: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    template: string
+    template: string,
+    content?: string
   ) => void;
   onRemove?: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -33,12 +35,18 @@ interface TemplateItemProps {
   ) => void;
 }
 
-const TemplateItem = ({ name, icon, onClick, onRemove }: TemplateItemProps) => {
+const TemplateItem = ({
+  name,
+  icon,
+  content,
+  onClick,
+  onRemove,
+}: TemplateItemProps) => {
   return (
     <div className="relative w-fit h-fit">
       <button
         className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center transition-all text-gray-900 dark:text-gray-50 bg-base-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:shadow-ring-gray-xs outline-none"
-        onClick={(e) => onClick(e, name)}
+        onClick={(e) => onClick(e, name, content)}
       >
         <Icon variant={icon} />
         <p className="text-xs/xs md:text-sm/sm font-semibold line-clamp-2">
@@ -65,6 +73,20 @@ TemplateItem.Skeleton = function TemplateItemSkeleton() {
   );
 };
 
+interface Template {
+  name: string;
+  icon: string;
+  content?: string;
+}
+
+const defaultTemplates: Template[] = [
+  {
+    name: "Clear",
+    icon: "file-04",
+    content: "",
+  },
+];
+
 interface TemplatesDialogProps {
   children: React.ReactNode;
 }
@@ -75,16 +97,16 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
 
   const create = useMutation(api.documents.createDocument);
   const removeTemplate = useMutation(api.templates.removeTemplate);
-  const templates = useQuery(api.templates.getGeneralTemplates);
   const userTemplates = useQuery(api.templates.getUserTemplates);
   const router = useRouter();
 
   const onCreate = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    template: string
+    name?: string,
+    content?: string
   ) => {
     event.stopPropagation();
-    const promise = create({ template }).then((documentId) => {
+    const promise = create({ template: name, content }).then((documentId) => {
       templateDialog.onClose();
       router.push(`/documents/${documentId}`);
     });
@@ -123,13 +145,14 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
           </p>
         </header>
 
-        {templates?.length ? (
+        {defaultTemplates?.length ? (
           <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-            {templates.map((template) => (
+            {defaultTemplates.map((template) => (
               <TemplateItem
                 key={template.name}
                 name={template.name}
                 icon={template.icon}
+                content={template.content}
                 onClick={onCreate}
               />
             ))}
@@ -139,7 +162,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
             No templates found.
           </p>
         )}
-        {!templates && (
+        {!defaultTemplates && (
           <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
             <TemplateItem.Skeleton />
             <TemplateItem.Skeleton />

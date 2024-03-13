@@ -16,64 +16,14 @@ import {
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import Navbar from "./_components/navbar";
+import useStoreUserEffect from "@/hooks/use-create-user-effect";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useConvexAuth();
-  const { user } = useUser();
-  const addUser = useMutation(api.users.createUser);
-  const [isUserAdded, setIsUserAdded] = useState(false);
   const isMd = useMediaQuery("(max-width: 768px)");
+  const userId = useStoreUserEffect();
 
-  // TODO: Fix create user on login
-  // TODO: change users table to clerk backend sdk using @clerk/nextjs
-
-  useEffect(() => {
-    const storageEmail = localStorage.getItem("accountEmail");
-    if (isAuthenticated && user) {
-      addUser({
-        email: user.emailAddresses[0].emailAddress!,
-        firstName: user.firstName!,
-        lastName: user.lastName!,
-        username: user.username!,
-        avatarUrl: user?.imageUrl,
-      })
-        .then(() => {
-          localStorage.setItem(
-            "accountEmail",
-            user.emailAddresses[0].emailAddress!
-          );
-          setIsUserAdded(true);
-        })
-        .catch(() => {
-          localStorage.removeItem("accountEmail");
-          setIsUserAdded(false);
-        });
-      // if (storageEmail !== user.emailAddresses[0].emailAddress) {
-      //   addUser({
-      //     email: user.emailAddresses[0].emailAddress!,
-      //     firstName: user.firstName!,
-      //     lastName: user.lastName!,
-      //     username: user.username!,
-      //     avatarUrl: user?.imageUrl,
-      //   })
-      //     .then(() => {
-      //       localStorage.setItem(
-      //         "accountEmail",
-      //         user.emailAddresses[0].emailAddress!
-      //       );
-      //       setIsUserAdded(true);
-      //     })
-      //     .catch(() => {
-      //       localStorage.removeItem("accountEmail");
-      //       setIsUserAdded(false);
-      //     });
-      // } else {
-      //   setIsUserAdded(true);
-      // }
-    }
-  }, [user, isAuthenticated]);
-
-  if (isLoading || isUserAdded) {
+  if (isLoading || !userId) {
     return (
       <div className="h-full flex items-center justify-center">
         <Spinner size="lg" />

@@ -1,3 +1,6 @@
+.bn-editor {
+  @apply px-4 md:px-[54px];
+}
 .bn-container {
   --bn-colors-editor-text: #101828; /* gray-900 */
   --bn-colors-menu-text: #101828;

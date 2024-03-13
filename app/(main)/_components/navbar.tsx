@@ -8,6 +8,7 @@ import { Sidebar } from "./sidebar";
 import { useRouter } from "next/navigation";
 import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,11 +19,7 @@ const Navbar = () => {
   return (
     <header className="h-16 w-full fixed top-0 left-0 bg-base-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 z-[9999]">
       <nav className="flex justify-between items-center gap-2 pl-4 pr-2 py-3 w-full h-full">
-        <Button
-          variant="tertiary gray"
-          size="sm"
-          onClick={() => router.push("/")}
-        >
+        <Link href="/">
           <Image
             src={
               theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
@@ -31,7 +28,7 @@ const Navbar = () => {
             height={32}
             alt="ExpertSync"
           />
-        </Button>
+        </Link>
         <Sheet open={sidebarSheet.isOpen} onOpenChange={sidebarSheet.onToggle}>
           <SheetTrigger asChild>
             <Button variant="tertiary gray" size="sm">

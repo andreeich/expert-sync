@@ -3,41 +3,40 @@ import { v } from "convex/values";
 
 export default defineSchema({
   documents: defineTable({
-    userId: v.id("users"),
+    userTokenId: v.string(),
     title: v.string(),
     content: v.optional(v.string()),
     isArchived: v.boolean(),
-  }).index("by_user", ["userId"]),
+  }).index("by_user", ["userTokenId"]),
   users: defineTable({
-    firstName: v.string(),
-    lastName: v.string(),
-    fullName: v.string(),
+    tokenIdentifier: v.string(),
+    name: v.string(),
     email: v.string(),
-    username: v.string(),
-    avatarUrl: v.optional(v.string()),
-  }).index("by_email", ["email"]),
+    nickname: v.string(),
+    picture: v.optional(v.string()),
+  })
+    .index("by_email", ["email"])
+    .index("by_token", ["tokenIdentifier"]),
   sharedDocuments: defineTable({
     documentId: v.id("documents"),
-    userId: v.id("users"),
+    userTokenId: v.string(),
   })
-    .index("by_user", ["userId"])
+    .index("by_user", ["userTokenId"])
     .index("by_document", ["documentId"])
-    .index("by_user_document", ["userId", "documentId"]),
+    .index("by_user_document", ["userTokenId", "documentId"]),
   templates: defineTable({
     name: v.string(),
     icon: v.string(),
     content: v.optional(v.string()),
-    isGeneral: v.boolean(),
-    userId: v.optional(v.id("users")),
+    userTokenId: v.string(),
   })
-    .index("by_user", ["userId"])
-    .index("by_name", ["name"])
-    .index("by_isGeneral", ["isGeneral"]),
+    .index("by_user", ["userTokenId"])
+    .index("by_name", ["name"]),
   messages: defineTable({
     documentId: v.id("documents"),
-    userId: v.id("users"),
+    userTokenId: v.string(),
     content: v.string(),
   })
-    .index("by_user", ["userId"])
+    .index("by_user", ["userTokenId"])
     .index("by_document", ["documentId"]),
 });
