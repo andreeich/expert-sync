@@ -39,7 +39,16 @@ const Navbar = () => {
               )}
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0">
+          <SheetContent
+            side="left"
+            className="p-0"
+            onOpenAutoFocus={(e) => {
+              e.preventDefault();
+            }}
+            onCloseAutoFocus={(e) => {
+              e.preventDefault();
+            }}
+          >
             <Sidebar />
           </SheetContent>
         </Sheet>

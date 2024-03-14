@@ -111,7 +111,14 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
   return (
     <Dialog open={archiveDialog.isOpen} onOpenChange={archiveDialog.onToggle}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+      >
         <header className="space-y-2 px-4 md:px-8 pt-4 md:pt-8">
           <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900 dark:text-gray-50">
             Trash Documents

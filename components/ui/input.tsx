@@ -34,6 +34,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             onChange={onChange}
             {...props}
+            autoFocus={false}
           />
         </div>
         {hint && (

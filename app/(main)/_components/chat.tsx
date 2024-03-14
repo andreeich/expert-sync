@@ -54,6 +54,12 @@ export const Chat = ({ documentId }: ChatProps) => {
         align="end"
         sideOffset={8}
         className="w-[375px] max-w-[calc(100vw_-_32px)] p-0"
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
       >
         <ScrollArea className="w-full h-[13rem]">
           <div className="p-4 space-y-4">
