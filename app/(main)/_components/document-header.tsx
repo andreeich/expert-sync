@@ -230,7 +230,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
           </Button>
           <DropdownMenuContent
             align="end"
-            className="w-[375px] max-w-[calc(100vw_-_32px_-_52px)] p-0"
+            className="w-[375px] max-w-[calc(100vw_-_2rem_-_3.25rem)] p-0"
             sideOffset={8}
           >
             <ScrollArea className="w-full h-[13rem]">
@@ -357,7 +357,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
 
 DocumentHeader.Skeleton = function DocumentHeaderSkeleton() {
   return (
-    <header className="flex items-center gap-2 justify-between pl-[3.375rem] pr-4 md:px-[3.375rem]">
+    <header className="flex items-center gap-2 justify-between px-4 md:px-[3.375rem]">
       <Skeleton className="w-[7.5rem] h-[2rem] md:h-[2.375rem]" />
       <Skeleton className="w-[10.625rem] h-[2.625rem]" />
     </header>

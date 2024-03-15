@@ -32,7 +32,7 @@ const DocumentsPage = () => {
   };
 
   return (
-    <main className="h-full flex flex-col items-center justify-center gap-8 md:gap-12 container pt-24 pb-12 md:pt-8">
+    <main className="h-screen flex flex-col items-center justify-center gap-8 md:gap-12 container pt-24 pb-12 md:pt-8">
       <div className="flex flex-col text-center items-center gap-4 md:gap-6">
         <h2 className="text-display-md/display-md md:text-display-xl/display-xl font-semibold tracking-tight">
           No documents yet!

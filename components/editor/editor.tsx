@@ -2,7 +2,12 @@
 
 import { useTheme } from "next-themes";
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
-import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
+import {
+  BlockNoteView,
+  useCreateBlockNote,
+  FormattingToolbar,
+  FormattingToolbarController,
+} from "@blocknote/react";
 import "@blocknote/react/style.css";
 import "./editor.css";
 
@@ -68,7 +73,7 @@ const Editor = ({
 
 export const EditorSkeleton = () => {
   return (
-    <div className="px-[54px]">
+    <div className="px-4 md:px-[54px]">
       <Skeleton className="h-[4.5rem] my-[0.1875rem] w-1/3" />
       <Skeleton className="h-6 my-[0.1875rem] w-1/2" />
       <Skeleton className="h-6 my-[0.1875rem] w-3/4" />

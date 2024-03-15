@@ -58,7 +58,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   }, [router]);
 
   return (
-    <main className="h-full flex flex-col pt-16 md:pt-0">
+    <main className="h-screen overflow-y-scroll flex flex-col pt-16 md:pt-0">
       {doc && doc.isArchived && <Banner documentId={doc._id} />}
       <section className="space-y-6 md:space-y-8 pt-8 pb-12 relative flex-1">
         {doc ? (
@@ -70,7 +70,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               username={user?.fullName || "Anonymous"}
               room={doc._id}
             />
-            <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8">
+            <div className="fixed right-4 md:right-8 bottom-4 md:bottom-8">
               <Chat documentId={doc._id} />
             </div>
           </>
@@ -78,7 +78,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
           <>
             <DocumentHeader.Skeleton />
             <EditorSkeleton />
-            <div className="absolute right-4 md:right-8 bottom-4 md:bottom-8">
+            <div className="fixed right-4 md:right-8 bottom-4 md:bottom-8">
               <Chat.Skeleton />
             </div>
           </>

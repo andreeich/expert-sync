@@ -5,7 +5,7 @@
 html,
 body,
 :root {
-  height: 100%;
+  @apply min-h-screen h-full;
 }
 
 @layer utilities {
@@ -29,10 +29,6 @@ body {
 
 .cl-modalBackdrop {
   @apply z-[99999];
-}
-
-.bn-container .bn-image-toolbar {
-  @apply !max-w-[500px] !w-[calc(100vw_-_32px)];
 }
 /* @layer base {
   :root {

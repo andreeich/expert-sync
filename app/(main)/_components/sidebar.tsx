@@ -84,7 +84,6 @@ const NavItemList = ({ search }: NavItemListProps) => {
       <>
         <NavItemSkeleton />
         <NavItemSkeleton />
-        <NavItemSkeleton />
       </>
     );
   }
