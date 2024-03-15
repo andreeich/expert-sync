@@ -79,7 +79,8 @@
 
 /* editor */
 .bn-editor {
-  @apply px-4 md:px-[54px] overflow-x-clip;
+  padding-inline: 0px;
+  @apply !px-4 md:!px-[54px] overflow-x-clip;
 }
 /* image toolbar */
 .bn-container .bn-image-toolbar {
