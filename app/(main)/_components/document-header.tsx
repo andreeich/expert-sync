@@ -41,13 +41,20 @@ import {
 
 import { DropdownItem } from "./dropdown-item";
 import { MemberItem } from "./member-item";
+import { useContent } from "@/hooks/use-content";
 
 export interface DocumentHeaderProps {
   document: Doc<"documents">;
   role?: string;
+  // onApply?: (content: string) => void;
 }
 
-export const DocumentHeader = ({ document, role }: DocumentHeaderProps) => {
+export const DocumentHeader = ({
+  document,
+  role,
+}: // onApply,
+DocumentHeaderProps) => {
+  // TODO: Clean it up
   const { user } = useUser();
   const router = useRouter();
   const documentId = document._id;
@@ -87,6 +94,8 @@ export const DocumentHeader = ({ document, role }: DocumentHeaderProps) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
   const isOwner = role === "owner";
+
+  const content = useContent();
 
   const onAddNewMember = () => {
     if (memberEmail === "") return;
@@ -217,10 +226,19 @@ export const DocumentHeader = ({ document, role }: DocumentHeaderProps) => {
       </TooltipProvider>
 
       <menu className="flex items-center gap-3">
+        {/* {onApply && content.content.length > 0 && (
+          <Button
+            size="icon-sm"
+            onClick={() => onApply(JSON.stringify(content.content, null, 2))}
+          >
+            <Icon variant="check-circle" />
+          </Button>
+        )} */}
         <DropdownMenu>
           <Button className="group" variant="secondary" size="sm" asChild>
             <DropdownMenuTrigger>
-              Members
+              <span className="hidden md:inline">Members</span>
+              <Icon variant="users-01" className="md:hidden" />
               <Icon
                 className="group-data-[state=open]:rotate-180 transition-transform"
                 variant="chevron-down"

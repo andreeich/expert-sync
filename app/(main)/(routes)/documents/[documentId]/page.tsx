@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { useMutation, useQuery } from "convex/react";
 import dynamic from "next/dynamic";
@@ -17,6 +17,7 @@ import { DocumentHeader } from "../../../_components/document-header";
 import { EditorSkeleton } from "@/components/editor/editor";
 import { Chat } from "../../../_components/chat";
 import { Banner } from "@/app/(main)/_components/banner";
+import { toast } from "sonner";
 
 interface DocumentIdPageProps {
   params: {
@@ -42,9 +43,15 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   );
 
   const onChangeContent = (content: string) => {
-    updateContent({
+    const promise = updateContent({
       id: params.documentId,
       content,
+    });
+
+    toast.promise(promise, {
+      loading: "Saving document...",
+      success: "Document saved",
+      error: "Failed to save document.",
     });
   };
 
@@ -66,7 +73,11 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       <section className="space-y-6 md:space-y-8 pt-8 pb-12 relative flex-1">
         {doc ? (
           <>
-            <DocumentHeader document={doc} role={role} />
+            <DocumentHeader
+              document={doc}
+              role={role}
+              // onApply={onChangeContent}
+            />
             <Editor
               onChange={onChangeContent}
               initialContent={doc.content}

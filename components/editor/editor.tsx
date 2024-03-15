@@ -1,27 +1,25 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
-import {
-  BlockNoteView,
-  useCreateBlockNote,
-  FormattingToolbar,
-  FormattingToolbarController,
-} from "@blocknote/react";
+import { Block, BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 import "./editor.css";
+
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
 
 import { useEdgeStore } from "@/lib/edgestore";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useParams } from "next/navigation";
+import { useContent } from "@/hooks/use-content";
 
 export interface EditorProps {
   onChange: (value: string) => void;
   initialContent?: string;
   editable?: boolean;
-  username?: string;
-  room?: string;
+  username: string;
+  room: string;
   role?: string;
 }
 
@@ -37,11 +35,6 @@ const Editor = ({
   const { edgestore } = useEdgeStore();
   const isMd = useMediaQuery("(max-width: 768px)");
 
-  const onChangeDebounce = useDebounceCallback(
-    (data: string) => onChange(data),
-    500
-  );
-
   const handleUpload = async (file: File) => {
     const response = await edgestore.publicFiles.upload({
       file,
@@ -50,12 +43,53 @@ const Editor = ({
     return response.url;
   };
 
+  const onChangeDebounced = useDebounceCallback(onChange, 5000);
+
   // TODO: Setup goddamn collaboration
+  const userColors = [
+    "#ACDC79",
+    "#A6EF67",
+    "#73E2A3",
+    "#5FE9D0",
+    "#67E3F9",
+    "#7CD4FD",
+    "#84CAFF",
+    "#84ADFF",
+    "#A4BCFD",
+    "#C3B5FD",
+    "#BDB4FE",
+    "#EEAAFD",
+    "#FAA7E0",
+    "#FEA3B4",
+    "#FF9C66",
+    "#F7B27A",
+    "#FDE272",
+  ];
+
+  const ydoc = new Y.Doc();
+
+  // Sync clients with the y-websocket provider
+  const websocketProvider = new WebsocketProvider(
+    // 'wss://demos.yjs.dev', 'count-demo', ydoc
+    "ws://localhost:1234",
+    room,
+    ydoc
+  );
+
+  const initBlocks = initialContent
+    ? (JSON.parse(initialContent) as PartialBlock[])
+    : undefined;
   const editor: BlockNoteEditor = useCreateBlockNote({
-    initialContent: initialContent
-      ? (JSON.parse(initialContent) as PartialBlock[])
-      : undefined,
+    initialContent: initBlocks,
     uploadFile: handleUpload,
+    collaboration: {
+      provider: websocketProvider,
+      fragment: ydoc.getXmlFragment("document-store"),
+      user: {
+        name: username,
+        color: userColors[Math.floor(Math.random() * userColors.length)],
+      },
+    },
   });
 
   return (
@@ -66,13 +100,7 @@ const Editor = ({
           theme={resolvedTheme === "dark" ? "dark" : "light"}
           editable={editable}
           onChange={() => {
-            const block = editor.getTextCursorPosition().block;
-            try {
-              editor.addStyles({ backgroundColor: "red" });
-            } catch (e) {
-              console.error("Error Editor: Failed to set styles on edit!");
-            }
-            onChangeDebounce(JSON.stringify(editor.document, null, 2));
+            onChangeDebounced(JSON.stringify(editor.document));
           }}
           sideMenu={isMd ? false : true}
         />

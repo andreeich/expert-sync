@@ -5,11 +5,11 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
   title: "ExpertSync",
   description: "The connected workspace where better, faster work happens.",
