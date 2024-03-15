@@ -32,6 +32,9 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const doc = useQuery(api.documents.getDocumentById, {
     documentId: params.documentId,
   });
+  const role = useQuery(api.documents.getDocumentRole, {
+    documentId: params.documentId,
+  });
 
   const Editor = useMemo(
     () => dynamic(() => import("@/components/editor/editor"), { ssr: false }),
@@ -58,17 +61,18 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   }, [router]);
 
   return (
-    <main className="h-screen overflow-y-scroll flex flex-col pt-16 md:pt-0">
+    <main className="h-full  flex flex-col pt-16 md:pt-0">
       {doc && doc.isArchived && <Banner documentId={doc._id} />}
       <section className="space-y-6 md:space-y-8 pt-8 pb-12 relative flex-1">
         {doc ? (
           <>
-            <DocumentHeader document={doc} />
+            <DocumentHeader document={doc} role={role} />
             <Editor
               onChange={onChangeContent}
               initialContent={doc.content}
               username={user?.fullName || "Anonymous"}
               room={doc._id}
+              role={role}
             />
             <div className="fixed right-4 md:right-8 bottom-4 md:bottom-8">
               <Chat documentId={doc._id} />

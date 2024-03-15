@@ -11,7 +11,7 @@ import Image from "next/image";
 const variants = {
   base: "relative rounded-md flex justify-center items-center flex-col cursor-pointer min-h-[150px] min-w-[200px] border border-dashed border-gray-400 transition-colors duration-200 ease-in-out",
   image:
-    "border-0 p-0 min-h-0 min-w-0 relative shadow-md bg-slate-200 rounded-md",
+    "border-0 p-0 min-h-0 min-w-0 relative shadow-md bg-gray-200 rounded-md",
   active: "border-2",
   disabled:
     "bg-gray-200 border-gray-200 cursor-default pointer-events-none bg-opacity-30 ",

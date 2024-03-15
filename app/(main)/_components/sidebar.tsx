@@ -198,7 +198,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="h-full flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 dark:border-gray-800 max-h-screen">
+    <aside className="h-full min-h-[38rem] overflow-y-scroll flex flex-col space-y-5 md:space-y-6 justify-between border-r border-gray-200 dark:border-gray-800 max-h-screen">
       <header className="space-y-5 md:space-y-6 pt-4 md:pt-8">
         <div className="px-4 md:pl-6 md:pr-5">
           <Link href="/">

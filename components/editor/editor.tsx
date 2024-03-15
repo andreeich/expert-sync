@@ -14,6 +14,7 @@ import "./editor.css";
 import { useEdgeStore } from "@/lib/edgestore";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useParams } from "next/navigation";
 
 export interface EditorProps {
   onChange: (value: string) => void;
@@ -21,6 +22,7 @@ export interface EditorProps {
   editable?: boolean;
   username?: string;
   room?: string;
+  role?: string;
 }
 
 const Editor = ({
@@ -29,6 +31,7 @@ const Editor = ({
   editable,
   username,
   room,
+  role,
 }: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
@@ -47,6 +50,7 @@ const Editor = ({
     return response.url;
   };
 
+  // TODO: Setup goddamn collaboration
   const editor: BlockNoteEditor = useCreateBlockNote({
     initialContent: initialContent
       ? (JSON.parse(initialContent) as PartialBlock[])
@@ -62,6 +66,12 @@ const Editor = ({
           theme={resolvedTheme === "dark" ? "dark" : "light"}
           editable={editable}
           onChange={() => {
+            const block = editor.getTextCursorPosition().block;
+            try {
+              editor.addStyles({ backgroundColor: "red" });
+            } catch (e) {
+              console.error("Error Editor: Failed to set styles on edit!");
+            }
             onChangeDebounce(JSON.stringify(editor.document, null, 2));
           }}
           sideMenu={isMd ? false : true}

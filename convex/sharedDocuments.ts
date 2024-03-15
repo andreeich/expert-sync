@@ -41,6 +41,10 @@ export const addSharedDocumentById = mutation({
       throw new Error("Not authorized");
     }
 
+    if (user.tokenIdentifier === args.userTokenId) {
+      throw new Error("You can't share the document with yourself");
+    }
+
     const sharedDocument = await ctx.db.insert("sharedDocuments", {
       documentId: args.documentId,
       userTokenId: args.userTokenId,
@@ -66,6 +70,10 @@ export const addSharedDocumentByEmail = mutation({
 
     if (user.tokenIdentifier !== document.userTokenId) {
       throw new Error("Not authorized");
+    }
+
+    if (user.email === args.email) {
+      throw new Error("You can't share the document with yourself");
     }
 
     const member = await ctx.db

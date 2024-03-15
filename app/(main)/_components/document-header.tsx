@@ -44,9 +44,10 @@ import { MemberItem } from "./member-item";
 
 export interface DocumentHeaderProps {
   document: Doc<"documents">;
+  role?: string;
 }
 
-export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
+export const DocumentHeader = ({ document, role }: DocumentHeaderProps) => {
   const { user } = useUser();
   const router = useRouter();
   const documentId = document._id;
@@ -63,9 +64,7 @@ export const DocumentHeader = ({ document }: DocumentHeaderProps) => {
   const allMembers = useQuery(api.documents.getMembersByDocument, {
     documentId,
   });
-  const role = useQuery(api.documents.getDocumentRole, {
-    documentId,
-  });
+
   const userTemplatesNames = useQuery(api.templates.getUserTemplates)?.map(
     (template) => {
       return template.name;

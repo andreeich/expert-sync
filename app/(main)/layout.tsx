@@ -43,15 +43,18 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </>
       ) : (
-        <ResizablePanelGroup direction="horizontal">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="!overflow-visible !h-auto"
+        >
           <ResizablePanel
-            className="min-w-[17.5rem] sticky top-0 h-screen"
+            className="min-w-[17.5rem] sticky top-0 !overflow-y-scroll !h-screen"
             defaultSize={18}
             maxSize={40}
           >
             <Sidebar />
           </ResizablePanel>
-          <ResizableHandle withHandle />
+          <ResizableHandle />
           <ResizablePanel>{children}</ResizablePanel>
         </ResizablePanelGroup>
       )}
