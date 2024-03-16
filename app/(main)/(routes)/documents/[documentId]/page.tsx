@@ -80,7 +80,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               // onApply={onChangeContent}
             />
 
-            <RoomProvider id="my-room" initialPresence={{}}>
+            <RoomProvider id={doc._id} initialPresence={{}}>
               <ClientSideSuspense fallback="Loading…">
                 {() => (
                   <Editor
