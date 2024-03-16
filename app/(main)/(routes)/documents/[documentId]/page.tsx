@@ -18,7 +18,8 @@ import { EditorSkeleton } from "@/components/editor/editor";
 import { Chat } from "../../../_components/chat";
 import { Banner } from "@/app/(main)/_components/banner";
 import { toast } from "sonner";
-
+import { RoomProvider } from "@/liveblocks.config";
+import { ClientSideSuspense } from "@liveblocks/react";
 interface DocumentIdPageProps {
   params: {
     documentId: Id<"documents">;
@@ -78,13 +79,20 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
               role={role}
               // onApply={onChangeContent}
             />
-            <Editor
-              onChange={onChangeContent}
-              initialContent={doc.content}
-              username={user?.fullName || "Anonymous"}
-              room={doc._id}
-              role={role}
-            />
+
+            <RoomProvider id="my-room" initialPresence={{}}>
+              <ClientSideSuspense fallback="Loading…">
+                {() => (
+                  <Editor
+                    onChange={onChangeContent}
+                    initialContent={doc.content}
+                    username={user?.fullName || "Anonymous"}
+                    room={doc._id}
+                    role={role}
+                  />
+                )}
+              </ClientSideSuspense>
+            </RoomProvider>
             <div className="fixed right-4 md:right-8 bottom-4 md:bottom-8">
               <Chat documentId={doc._id} />
             </div>

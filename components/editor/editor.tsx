@@ -8,11 +8,16 @@ import "./editor.css";
 
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
+import { SocketIOProvider } from "y-socket.io";
+import { WebrtcProvider } from "y-webrtc";
 
 import { useEdgeStore } from "@/lib/edgestore";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useContent } from "@/hooks/use-content";
+import { useEffect, useState } from "react";
+import LiveblocksProvider from "@liveblocks/yjs";
+import { useRoom } from "@/liveblocks.config";
 
 export interface EditorProps {
   onChange: (value: string) => void;
@@ -28,12 +33,70 @@ const Editor = ({
   initialContent,
   editable,
   username,
-  room,
   role,
 }: EditorProps) => {
+  const room = useRoom();
+  const [doc, setDoc] = useState<Y.Doc>();
+  const [provider, setProvider] = useState<any>();
+
+  useEffect(() => {
+    const yDoc = new Y.Doc();
+    const yProvider = new LiveblocksProvider(room, yDoc);
+    setDoc(yDoc);
+    setProvider(yProvider);
+
+    return () => {
+      yDoc?.destroy();
+      yProvider?.destroy();
+    };
+  }, [room]);
+
+  if (!doc || !provider) {
+    return null;
+  }
+
+  return (
+    <BlockNote
+      doc={doc}
+      provider={provider}
+      username={username}
+      onChange={onChange}
+      initialContent={initialContent}
+    />
+  );
+};
+
+export const EditorSkeleton = () => {
+  return (
+    <div className="px-4 md:px-[54px]">
+      <Skeleton className="h-[4.5rem] my-[0.1875rem] w-1/3" />
+      <Skeleton className="h-6 my-[0.1875rem] w-1/2" />
+      <Skeleton className="h-6 my-[0.1875rem] w-3/4" />
+      <Skeleton className="h-6 my-[0.1875rem] w-2/3" />
+    </div>
+  );
+};
+
+type BlockNoteProps = {
+  doc: Y.Doc;
+  provider: any;
+
+  onChange: (value: string) => void;
+  initialContent?: string;
+  username: string;
+};
+
+function BlockNote({
+  doc,
+  provider,
+  initialContent,
+  username,
+  onChange,
+}: BlockNoteProps) {
+  const isMd = useMediaQuery("(max-width: 768px)");
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
-  const isMd = useMediaQuery("(max-width: 768px)");
+  const onChangeDebounced = useDebounceCallback(onChange, 5000);
 
   const handleUpload = async (file: File) => {
     const response = await edgestore.publicFiles.upload({
@@ -42,10 +105,6 @@ const Editor = ({
 
     return response.url;
   };
-
-  const onChangeDebounced = useDebounceCallback(onChange, 5000);
-
-  // TODO: Setup goddamn collaboration
   const userColors = [
     "#ACDC79",
     "#A6EF67",
@@ -65,17 +124,6 @@ const Editor = ({
     "#F7B27A",
     "#FDE272",
   ];
-
-  const ydoc = new Y.Doc();
-
-  // Sync clients with the y-websocket provider
-  const websocketProvider = new WebsocketProvider(
-    // 'wss://demos.yjs.dev', 'count-demo', ydoc
-    "ws://localhost:1234",
-    room,
-    ydoc
-  );
-
   const initBlocks = initialContent
     ? (JSON.parse(initialContent) as PartialBlock[])
     : undefined;
@@ -83,8 +131,8 @@ const Editor = ({
     initialContent: initBlocks,
     uploadFile: handleUpload,
     collaboration: {
-      provider: websocketProvider,
-      fragment: ydoc.getXmlFragment("document-store"),
+      provider: provider,
+      fragment: doc.getXmlFragment("document-store"),
       user: {
         name: username,
         color: userColors[Math.floor(Math.random() * userColors.length)],
@@ -94,30 +142,16 @@ const Editor = ({
 
   return (
     <div>
-      {editor && (
-        <BlockNoteView
-          editor={editor}
-          theme={resolvedTheme === "dark" ? "dark" : "light"}
-          editable={editable}
-          onChange={() => {
-            onChangeDebounced(JSON.stringify(editor.document));
-          }}
-          sideMenu={isMd ? false : true}
-        />
-      )}
+      <BlockNoteView
+        editor={editor}
+        theme={resolvedTheme === "dark" ? "dark" : "light"}
+        onChange={() => {
+          onChangeDebounced(JSON.stringify(editor.document));
+        }}
+        sideMenu={isMd ? false : true}
+      />
     </div>
   );
-};
-
-export const EditorSkeleton = () => {
-  return (
-    <div className="px-4 md:px-[54px]">
-      <Skeleton className="h-[4.5rem] my-[0.1875rem] w-1/3" />
-      <Skeleton className="h-6 my-[0.1875rem] w-1/2" />
-      <Skeleton className="h-6 my-[0.1875rem] w-3/4" />
-      <Skeleton className="h-6 my-[0.1875rem] w-2/3" />
-    </div>
-  );
-};
+}
 
 export default Editor;
