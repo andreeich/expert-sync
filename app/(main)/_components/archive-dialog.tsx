@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -67,6 +67,8 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
   const restore = useMutation(api.documents.restoreDocument);
   const remove = useMutation(api.documents.deleteDocument);
 
+  const params = useParams();
+
   const [search, setSearch] = useState("");
 
   const onRestore = (
@@ -97,6 +99,8 @@ const ArchiveDialog = ({ children }: ArchiveDialogProps) => {
       success: "Document deleted successfully!",
       error: "Failed to delete document.",
     });
+
+    if (params.documentId === id) router.push("/documents");
   };
 
   const onClick = (

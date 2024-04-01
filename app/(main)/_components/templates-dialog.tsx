@@ -19,6 +19,7 @@ import { useTemplateDialog } from "@/hooks/use-template-dialog";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface TemplateItemProps {
   name: string;
@@ -69,7 +70,7 @@ const TemplateItem = ({
 
 TemplateItem.Skeleton = function TemplateItemSkeleton() {
   return (
-    <Skeleton className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 bg-base-white dark:bg-gray-950" />
+    <Skeleton className="w-[80px] h-[80px] flex-shrink-0 md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 bg-base-white dark:bg-gray-950" />
   );
 };
 
@@ -146,24 +147,27 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
         </header>
 
         {defaultTemplates?.length ? (
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-            {defaultTemplates.map((template) => (
-              <TemplateItem
-                key={template.name}
-                name={template.name}
-                icon={template.icon}
-                content={template.content}
-                onClick={onCreate}
-              />
-            ))}
-          </div>
+          <ScrollArea className="w-full">
+            <div className="flex gap-4">
+              {defaultTemplates.map((template) => (
+                <TemplateItem
+                  key={template.name}
+                  name={template.name}
+                  icon={template.icon}
+                  content={template.content}
+                  onClick={onCreate}
+                />
+              ))}
+              <ScrollBar orientation="horizontal" />
+            </div>
+          </ScrollArea>
         ) : (
           <p className="text-lg/lg md:text-md/md text-gray-300 dark:text-gray-700 font-medium">
             No templates found.
           </p>
         )}
         {!defaultTemplates && (
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+          <div className="flex gap-4 overflow-hidden">
             <TemplateItem.Skeleton />
             <TemplateItem.Skeleton />
             <TemplateItem.Skeleton />
@@ -175,24 +179,29 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
           Your templates
         </h4>
         {userTemplates?.length ? (
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-            {userTemplates.map((template) => (
-              <TemplateItem
-                key={template.name}
-                name={template.name}
-                icon={template.icon}
-                onClick={onCreate}
-                onRemove={onRemove}
-              />
-            ))}
-          </div>
+          // <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+          <ScrollArea className="w-full">
+            <div className="flex gap-4">
+              {userTemplates.map((template) => (
+                <TemplateItem
+                  key={template.name}
+                  name={template.name}
+                  icon={template.icon}
+                  onClick={onCreate}
+                  onRemove={onRemove}
+                />
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         ) : (
+          // </div>
           <p className="text-lg/lg md:text-md/md text-gray-300 dark:text-gray-700 font-medium">
             No templates found.
           </p>
         )}
         {!userTemplates && (
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+          <div className="flex gap-4 overflow-hidden">
             <TemplateItem.Skeleton />
             <TemplateItem.Skeleton />
             <TemplateItem.Skeleton />

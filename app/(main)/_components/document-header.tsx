@@ -124,6 +124,7 @@ DocumentHeaderProps) => {
     }
   };
 
+  // TODO: redirect if the user is a member
   const onRemoveMember = (userTokenId: string) => {
     const promise = removeMember({
       documentId,
@@ -272,6 +273,7 @@ DocumentHeaderProps) => {
             <section className="px-4 py-3 flex items-center">
               <Input
                 ref={memberEmailRef}
+                type="email"
                 placeholder="Email address"
                 value={memberEmail}
                 className="rounded-r-none z-[5] w-full"
@@ -298,31 +300,33 @@ DocumentHeaderProps) => {
             className="px-0 py-0.5 max-w-[calc(100vw_-_32px)] w-fit flex flex-col"
             sideOffset={8}
           >
-            <AlertDialog
-              onOpenChange={() => {
-                setIsRenameDialogOpen((prev) => !prev);
-              }}
-              open={isRenameDialogOpen}
-            >
-              <AlertDialogTrigger asChild>
-                <DropdownItem title="Rename" icon="file-edit" />
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <Input
-                    className="w-full"
-                    label="Please enter a file name"
-                    hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
-                    defaultValue={document.title}
-                    ref={docTitleRef}
-                  />
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <Button onClick={onRename}>Apply</Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {isOwner && (
+              <AlertDialog
+                onOpenChange={() => {
+                  setIsRenameDialogOpen((prev) => !prev);
+                }}
+                open={isRenameDialogOpen}
+              >
+                <AlertDialogTrigger asChild>
+                  <DropdownItem title="Rename" icon="file-edit" />
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <Input
+                      className="w-full"
+                      label="Please enter a file name"
+                      hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
+                      defaultValue={document.title}
+                      ref={docTitleRef}
+                    />
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <Button onClick={onRename}>Apply</Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
             {isOwner && (
               <AlertDialog
                 onOpenChange={() => {
@@ -351,7 +355,7 @@ DocumentHeaderProps) => {
               </AlertDialog>
             )}
 
-            <hr className="border-gray-200 dark:border-gray-800 my-1" />
+            <hr className="border-gray-200 dark:border-gray-800 my-1 first:hidden" />
             {isOwner ? (
               <DropdownItem
                 title="Delete"
@@ -362,7 +366,10 @@ DocumentHeaderProps) => {
               <DropdownItem
                 title="Disconnect"
                 icon="log-out-01"
-                onClick={() => onRemoveMember(user!.id)}
+                onClick={() => {
+                  onRemoveMember(user!.id);
+                  router.push("/documents");
+                }}
               />
             )}
           </DropdownMenuContent>
