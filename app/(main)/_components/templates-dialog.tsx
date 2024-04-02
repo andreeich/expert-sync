@@ -179,7 +179,6 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
           Your templates
         </h4>
         {userTemplates?.length ? (
-          // <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
           <ScrollArea className="w-full">
             <div className="flex gap-4">
               {userTemplates.map((template) => (
@@ -195,7 +194,6 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         ) : (
-          // </div>
           <p className="text-lg/lg md:text-md/md text-gray-300 dark:text-gray-700 font-medium">
             No templates found.
           </p>

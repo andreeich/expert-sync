@@ -256,6 +256,8 @@ DocumentHeaderProps) => {
                 allMembers?.map((member) => (
                   <MemberItem
                     key={member!.tokenIdentifier}
+                    name={member?.name || "Anonymous"}
+                    avatarUrl={member?.picture}
                     email={member?.email || "No email"}
                     onRemove={() => onRemoveMember(member!.tokenIdentifier)}
                   />
@@ -270,7 +272,7 @@ DocumentHeaderProps) => {
               <ScrollBar orientation="vertical" />
             </ScrollArea>
             <hr className="border-gray-200 dark:border-gray-800" />
-            <section className="px-4 py-3 flex items-center">
+            <form className="px-4 py-3 flex items-center">
               <Input
                 ref={memberEmailRef}
                 type="email"
@@ -286,7 +288,7 @@ DocumentHeaderProps) => {
               >
                 <Icon variant="plus" />
               </Button>
-            </section>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
