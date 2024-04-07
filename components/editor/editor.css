@@ -49,7 +49,8 @@
   --bn-colors-disabled-text: #98a2b3; /* gray-400 */
   --bn-colors-disabled-background: #182230; /* gray-50 */
 
-  --bn-colors-editor-background: #0c111d; /* gray-950 */
+  --bn-colors-editor-background: #0c111d !important;
+    /* gray-950 */
   --bn-colors-menu-background: #0c111d;
   --bn-colors-selected-text: #0c111d;
 
