@@ -8,6 +8,7 @@ import { EdgeStoreProvider } from "@/lib/edgestore";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
@@ -46,8 +47,10 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <EdgeStoreProvider>
-              <Toaster position="bottom-center" />
-              {children}
+              <TooltipProvider>
+                <Toaster position="bottom-center" />
+                {children}
+              </TooltipProvider>
             </EdgeStoreProvider>
           </ConvexClientProvider>
         </ThemeProvider>

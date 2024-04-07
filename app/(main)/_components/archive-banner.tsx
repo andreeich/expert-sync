@@ -16,11 +16,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-interface BannerProps {
+interface ArchiveBannerProps {
   documentId: Id<"documents">;
 }
 
-export const Banner = ({ documentId }: BannerProps) => {
+export const ArchiveBanner = ({ documentId }: ArchiveBannerProps) => {
   const router = useRouter();
 
   const restore = useMutation(api.documents.restoreDocument);
@@ -28,7 +28,7 @@ export const Banner = ({ documentId }: BannerProps) => {
 
   const onRestore = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: Id<"documents">
+    id: Id<"documents">,
   ) => {
     event.stopPropagation();
 
@@ -43,7 +43,7 @@ export const Banner = ({ documentId }: BannerProps) => {
 
   const onRemove = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: Id<"documents">
+    id: Id<"documents">,
   ) => {
     event.stopPropagation();
 
@@ -59,15 +59,12 @@ export const Banner = ({ documentId }: BannerProps) => {
   };
 
   return (
-    <article className="bg-error-50 dark:bg-error-950 pl-7 pr-5 md:px-[54px] py-4 flex items-center justify-between gap-4 ">
+    <article className="bg-error-50 dark:bg-error-950 pl-7 pr-5 md:px-[54px] py-4 flex items-center justify-between gap-4 border-b border-error-200 dark:border-error-800">
       <p className="text-error-700 dark:text-error-300 font-semibold text-md/md md:text-lg/lg">
         This page is in the trash
       </p>
       <span className="flex items-center gap-3">
-        <Button
-          onClick={(e) => onRestore(e, documentId)}
-          variant="destructive tertiary"
-        >
+        <Button onClick={(e) => onRestore(e, documentId)} variant="destructive tertiary">
           Restore
         </Button>
         <AlertDialog>
@@ -76,18 +73,12 @@ export const Banner = ({ documentId }: BannerProps) => {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>
-                Are you sure you want to delete this document?
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone.
-              </AlertDialogDescription>
+              <AlertDialogTitle>Are you sure you want to delete this document?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={(e) => onRemove(e, documentId)}>
-                Delete
-              </AlertDialogAction>
+              <AlertDialogAction onClick={(e) => onRemove(e, documentId)}>Delete</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

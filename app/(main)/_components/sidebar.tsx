@@ -204,11 +204,7 @@ const Sidebar = () => {
         <div className="px-4 md:pl-6 md:pr-5 flex justify-between">
           <Link href="/">
             <Image
-              src={
-                theme.resolvedTheme === "light"
-                  ? "/logo.svg"
-                  : "/logo-white.svg"
-              }
+              src={theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"}
               width={161}
               height={32}
               alt="ExpertSync"
@@ -243,11 +239,7 @@ const Sidebar = () => {
           <ArchiveDialog>
             <NavItem label="Trash" iconVariant="trash-01" />
           </ArchiveDialog>
-          <NavItem
-            label="Settings"
-            iconVariant="settings-01"
-            onClick={openSettings}
-          />
+          <NavItem label="Settings" iconVariant="settings-01" onClick={openSettings} />
         </nav>
         <Account />
       </footer>

@@ -42,6 +42,7 @@ import {
 import { DropdownItem } from "./dropdown-item";
 import { MemberItem } from "./member-item";
 import { useContent } from "@/hooks/use-content";
+import { HistoryDialog } from "./history-dialog";
 
 export interface DocumentHeaderProps {
   document: Doc<"documents">;
@@ -71,12 +72,11 @@ DocumentHeaderProps) => {
   const allMembers = useQuery(api.documents.getMembersByDocument, {
     documentId,
   });
+  const addDocumentHistory = useMutation(api.documentHistory.addDocumentHistory);
 
-  const userTemplatesNames = useQuery(api.templates.getUserTemplates)?.map(
-    (template) => {
-      return template.name;
-    }
-  );
+  const userTemplatesNames = useQuery(api.templates.getUserTemplates)?.map((template) => {
+    return template.name;
+  });
 
   const docTitleRef = useRef<HTMLInputElement>(null);
   const docTitleSchema = z.coerce
@@ -94,6 +94,7 @@ DocumentHeaderProps) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
   const isOwner = role === "owner";
+  const isPreview = role === "preview";
 
   const content = useContent();
 
@@ -211,23 +212,36 @@ DocumentHeaderProps) => {
     }
   };
 
+  const onAddDocumentHistory = () => {
+    if (!document.content) return;
+    const promise = addDocumentHistory({
+      documentId,
+      content: document.content,
+    });
+
+    toast.promise(promise, {
+      loading: "Saving document...",
+      success: "Document saved",
+      error: "Failed to save document.",
+    });
+  };
+
   return (
     <header className="flex items-center gap-2 justify-between px-4 md:px-[3.375rem]">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <h1 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold text-gray-900 dark:text-gray-50 line-clamp-1 break-all">
-              {document.title}
-            </h1>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{document.title}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <h1 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold text-gray-900 dark:text-gray-50 line-clamp-1 break-all">
+            {document.title}
+          </h1>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{document.title}</p>
+        </TooltipContent>
+      </Tooltip>
 
-      <menu className="flex items-center gap-3">
-        {/* {onApply && content.content.length > 0 && (
+      {!isPreview && (
+        <menu className="flex items-center gap-3">
+          {/* {onApply && content.content.length > 0 && (
           <Button
             size="icon-sm"
             onClick={() => onApply(JSON.stringify(content.content, null, 2))}
@@ -235,148 +249,168 @@ DocumentHeaderProps) => {
             <Icon variant="check-circle" />
           </Button>
         )} */}
-        <DropdownMenu>
-          <Button className="group" variant="secondary" size="sm" asChild>
-            <DropdownMenuTrigger>
-              <span className="hidden md:inline">Members</span>
-              <Icon variant="users-01" className="md:hidden" />
-              <Icon
-                className="group-data-[state=open]:rotate-180 transition-transform"
-                variant="chevron-down"
-              />
-            </DropdownMenuTrigger>
-          </Button>
-          <DropdownMenuContent
-            align="end"
-            className="w-[375px] max-w-[calc(100vw_-_2rem_-_3.25rem)] p-0"
-            sideOffset={8}
-          >
-            <ScrollArea className="w-full h-[13rem]">
-              {allMembers?.length ? (
-                allMembers?.map((member) => (
-                  <MemberItem
-                    key={member!.tokenIdentifier}
-                    name={member?.name || "Anonymous"}
-                    avatarUrl={member?.picture}
-                    email={member?.email || "No email"}
-                    onRemove={() => onRemoveMember(member!.tokenIdentifier)}
-                  />
-                ))
-              ) : (
-                <div className="flex items-center px-4 py-2 h-[3.25rem]">
-                  <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
-                    No members yet
-                  </p>
-                </div>
-              )}
-              <ScrollBar orientation="vertical" />
-            </ScrollArea>
-            <hr className="border-gray-200 dark:border-gray-800" />
-            <form className="px-4 py-3 flex items-center">
-              <Input
-                ref={memberEmailRef}
-                type="email"
-                placeholder="Email address"
-                value={memberEmail}
-                className="rounded-r-none z-[5] w-full"
-                onChange={(e) => setMemberEmail(e.target.value)}
-              />
-              <Button
-                variant="secondary"
-                className="h-[44px] rounded-l-none border-l-0 z-[0]"
-                onClick={onAddNewMember}
-              >
-                <Icon variant="plus" />
-              </Button>
-            </form>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <Button variant="tertiary gray" size="icon-sm" asChild>
-            <DropdownMenuTrigger>
-              <Icon variant="dots-vertical" />
-            </DropdownMenuTrigger>
-          </Button>
-          <DropdownMenuContent
-            align="end"
-            className="px-0 py-0.5 max-w-[calc(100vw_-_32px)] w-fit flex flex-col"
-            sideOffset={8}
-          >
-            {isOwner && (
-              <AlertDialog
-                onOpenChange={() => {
-                  setIsRenameDialogOpen((prev) => !prev);
-                }}
-                open={isRenameDialogOpen}
-              >
-                <AlertDialogTrigger asChild>
-                  <DropdownItem title="Rename" icon="file-edit" />
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <Input
-                      className="w-full"
-                      label="Please enter a file name"
-                      hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
-                      defaultValue={document.title}
-                      ref={docTitleRef}
+          <DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button className="group" variant="secondary" size="sm" asChild>
+                  <DropdownMenuTrigger>
+                    <span className="hidden md:inline">Members</span>
+                    <Icon variant="users-01" className="md:hidden" />
+                    <Icon
+                      className="group-data-[state=open]:rotate-180 transition-transform"
+                      variant="chevron-down"
                     />
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <Button onClick={onRename}>Apply</Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-            {isOwner && (
-              <AlertDialog
-                onOpenChange={() => {
-                  setIsTemplateDialogOpen((prev) => !prev);
-                }}
-                open={isTemplateDialogOpen}
-              >
-                <AlertDialogTrigger asChild>
-                  <DropdownItem title="Create a template" icon="file-05" />
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <Input
-                      className="w-full"
-                      label="Please enter a template name"
-                      placeholder="Template name"
-                      hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
-                      ref={templateNameRef}
-                    />
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <Button onClick={onAddTemplate}>Apply</Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
+                  </DropdownMenuTrigger>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="md:hidden">
+                <p>Members</p>
+              </TooltipContent>
+            </Tooltip>
 
-            <hr className="border-gray-200 dark:border-gray-800 my-1 first:hidden" />
-            {isOwner ? (
-              <DropdownItem
-                title="Delete"
-                icon="trash-01"
-                onClick={onArchive}
-              />
-            ) : (
-              <DropdownItem
-                title="Disconnect"
-                icon="log-out-01"
-                onClick={() => {
-                  onRemoveMember(user!.id);
-                  router.push("/documents");
-                }}
-              />
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </menu>
+            <DropdownMenuContent
+              align="end"
+              className="w-[375px] max-w-[calc(100vw_-_2rem_-_3.25rem)] p-0"
+              sideOffset={8}
+            >
+              <ScrollArea className="w-full h-[13rem]">
+                {allMembers?.length ? (
+                  allMembers?.map((member) => (
+                    <MemberItem
+                      key={member!.tokenIdentifier}
+                      name={member?.name || "Anonymous"}
+                      avatarUrl={member?.picture}
+                      email={member?.email || "No email"}
+                      onRemove={() => onRemoveMember(member!.tokenIdentifier)}
+                    />
+                  ))
+                ) : (
+                  <div className="flex items-center px-4 py-2 h-[3.25rem]">
+                    <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
+                      No members yet
+                    </p>
+                  </div>
+                )}
+                <ScrollBar orientation="vertical" />
+              </ScrollArea>
+              <hr className="border-gray-200 dark:border-gray-800" />
+              <form className="px-4 py-3 flex items-center">
+                <Input
+                  ref={memberEmailRef}
+                  type="email"
+                  placeholder="Email address"
+                  value={memberEmail}
+                  className="rounded-r-none z-[5] w-full"
+                  onChange={(e) => setMemberEmail(e.target.value)}
+                />
+                <Button
+                  variant="secondary"
+                  className="h-[44px] rounded-l-none border-l-0 z-[0]"
+                  onClick={onAddNewMember}
+                >
+                  <Icon variant="plus" />
+                </Button>
+              </form>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {isOwner && (
+            <HistoryDialog documentId={documentId}>
+              <Button className="group" variant="secondary" size="icon-sm" aria-label="History">
+                <Icon variant="box" />
+              </Button>
+            </HistoryDialog>
+          )}
+          <DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button variant="tertiary gray" size="icon-sm" asChild>
+                  <DropdownMenuTrigger>
+                    <Icon variant="dots-vertical" />
+                  </DropdownMenuTrigger>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Options</p>
+              </TooltipContent>
+            </Tooltip>
+            <DropdownMenuContent
+              align="end"
+              className="px-0 py-0.5 max-w-[calc(100vw_-_32px)] w-fit flex flex-col"
+              sideOffset={8}
+            >
+              {isOwner && (
+                <AlertDialog
+                  onOpenChange={() => {
+                    setIsRenameDialogOpen((prev) => !prev);
+                  }}
+                  open={isRenameDialogOpen}
+                >
+                  <AlertDialogTrigger asChild>
+                    <DropdownItem title="Rename" icon="file-edit" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <Input
+                        className="w-full"
+                        label="Please enter a file name"
+                        hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
+                        defaultValue={document.title}
+                        ref={docTitleRef}
+                      />
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <Button onClick={onRename}>Apply</Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              {isOwner && (
+                <AlertDialog
+                  onOpenChange={() => {
+                    setIsTemplateDialogOpen((prev) => !prev);
+                  }}
+                  open={isTemplateDialogOpen}
+                >
+                  <AlertDialogTrigger asChild>
+                    <DropdownItem title="Create a template" icon="file-05" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <Input
+                        className="w-full"
+                        label="Please enter a template name"
+                        placeholder="Template name"
+                        hint='Note that special characters (such as ", /, :, *, ?, ", &lt;, &gt;, |) are not allowed. The file name should not end with a space or a period.'
+                        ref={templateNameRef}
+                      />
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <Button onClick={onAddTemplate}>Apply</Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <DropdownItem title="Save" icon="save-01" onClick={onAddDocumentHistory} />
+
+              <hr className="border-gray-200 dark:border-gray-800 my-1 first:hidden" />
+              {isOwner ? (
+                <DropdownItem title="Delete" icon="trash-01" onClick={onArchive} />
+              ) : (
+                <DropdownItem
+                  title="Disconnect"
+                  icon="log-out-01"
+                  onClick={() => {
+                    onRemoveMember(user!.id);
+                    router.push("/documents");
+                  }}
+                />
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </menu>
+      )}
     </header>
   );
 };

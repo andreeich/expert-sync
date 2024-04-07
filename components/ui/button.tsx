@@ -25,6 +25,8 @@ const buttonVariants = cva(
           "text-error-700 hover:text-error-800 disabled:text-gray-400 dark:text-error-300 dark:hover:text-error-200",
         "link gray":
           "text-gray-600 hover:text-gray-700 disabled:text-gray-400 dark:text-error-400 dark:hover:text-error-300",
+        "warning primary":
+          "text-base-white border border-warning-600 bg-warning-600 shadow-xs hover:border-warning-700 hover:bg-warning-700 focus-visible:shadow-ring-gray-xs disabled:text-gray-400 disabled:bg-gray-100 disabled:border-gray-200 dark:disabled:border-gray-700 dark:disabled:border-gray-800",
       },
       size: {
         sm: "text-sm/sm px-3 py-2 gap-1",
@@ -49,7 +51,7 @@ const buttonVariants = cva(
       variant: "primary",
       size: "sm",
     },
-  }
+  },
 );
 
 export interface ButtonProps

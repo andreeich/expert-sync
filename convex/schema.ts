@@ -39,4 +39,10 @@ export default defineSchema({
   })
     .index("by_user", ["userTokenId"])
     .index("by_document", ["documentId"]),
+  documentHistory: defineTable({
+    documentId: v.id("documents"),
+    content: v.string(),
+    createdBy: v.string(),
+    timestamp: v.number(),
+  }).index("by_document", ["documentId"]),
 });

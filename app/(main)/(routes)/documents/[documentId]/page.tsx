@@ -16,7 +16,7 @@ import { Spinner } from "@/components/spinner";
 import { DocumentHeader } from "../../../_components/document-header";
 import { EditorSkeleton } from "@/components/editor/editor";
 import { Chat } from "../../../_components/chat";
-import { Banner } from "@/app/(main)/_components/banner";
+import { ArchiveBanner } from "@/app/(main)/_components/archive-banner";
 import { toast } from "sonner";
 import { RoomProvider } from "@/liveblocks.config";
 import { ClientSideSuspense } from "@liveblocks/react";
@@ -40,7 +40,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
   const Editor = useMemo(
     () => dynamic(() => import("@/components/editor/editor"), { ssr: false }),
-    []
+    [],
   );
 
   const onChangeContent = (content: string) => {
@@ -70,7 +70,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
   return (
     <main className="h-full  flex flex-col pt-16 md:pt-0">
-      {doc && doc.isArchived && <Banner documentId={doc._id} />}
+      {doc && doc.isArchived && <ArchiveBanner documentId={doc._id} />}
       <section className="space-y-6 md:space-y-8 pt-8 pb-12 relative flex-1">
         {doc ? (
           <>

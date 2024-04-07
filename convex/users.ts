@@ -51,3 +51,21 @@ export const getUserByEmail = query({
     return user;
   },
 });
+
+export const getUserByTokenId = query({
+  args: {
+    tokenId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (e) => e.eq("tokenIdentifier", args.tokenId))
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
+  },
+});
