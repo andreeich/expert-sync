@@ -17,13 +17,11 @@ const Navbar = () => {
 
   const router = useRouter();
   return (
-    <header className="h-16 w-full fixed top-0 left-0 bg-base-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 z-[9999]">
+    <header className="h-16 w-full fixed top-0 left-0 bg-base-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 z-[999]">
       <nav className="flex justify-between items-center gap-2 pl-4 pr-2 py-3 w-full h-full">
         <Link href="/">
           <Image
-            src={
-              theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
-            }
+            src={theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"}
             width={161}
             height={32}
             alt="ExpertSync"

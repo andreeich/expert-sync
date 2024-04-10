@@ -20,7 +20,7 @@ import useStoreUserEffect from "@/hooks/use-create-user-effect";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useConvexAuth();
-  const isMd = useMediaQuery("(max-width: 768px)");
+  const isMd = useMediaQuery("(min-width: 768px)");
   const userId = useStoreUserEffect();
 
   if (isLoading || !userId) {
@@ -38,15 +38,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {isMd ? (
-        <>
-          <Navbar />
-          {children}
-        </>
-      ) : (
-        <ResizablePanelGroup
-          direction="horizontal"
-          className="!overflow-visible !h-auto"
-        >
+        <ResizablePanelGroup direction="horizontal" className="!overflow-visible !h-auto">
           <ResizablePanel
             className="min-w-[17.5rem] sticky top-0 !overflow-y-scroll !h-screen"
             defaultSize={18}
@@ -57,6 +49,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           <ResizableHandle />
           <ResizablePanel>{children}</ResizablePanel>
         </ResizablePanelGroup>
+      ) : (
+        <>
+          <Navbar />
+          {children}
+        </>
       )}
     </>
   );

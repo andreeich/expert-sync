@@ -13,15 +13,12 @@ import { TemplatesDialog } from "../../_components/templates-dialog";
 const DocumentsPage = () => {
   const router = useRouter();
   const create = useMutation(api.documents.createDocument);
-  const isMd = useMediaQuery("(max-width: 768px)");
+  const isMd = useMediaQuery("(min-width: 768px)");
 
-  const onCreate = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    template: string
-  ) => {
+  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, template: string) => {
     event.stopPropagation();
     const promise = create({ template }).then((documentId) =>
-      router.push(`/documents/${documentId}`)
+      router.push(`/documents/${documentId}`),
     );
 
     toast.promise(promise, {
@@ -45,13 +42,13 @@ const DocumentsPage = () => {
         <Button
           className="w-full md:w-fit"
           variant="secondary"
-          size={isMd ? "xl" : "2xl"}
+          size={isMd ? "2xl" : "xl"}
           onClick={() => router.push("/")}
         >
           <Icon variant="arrow-left" /> Main page
         </Button>
         <TemplatesDialog>
-          <Button className="w-full md:w-fit" size={isMd ? "xl" : "2xl"}>
+          <Button className="w-full md:w-fit" size={isMd ? "2xl" : "xl"}>
             New document
           </Button>
         </TemplatesDialog>

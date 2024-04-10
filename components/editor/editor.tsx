@@ -93,7 +93,7 @@ function BlockNote({
   username,
   onChange,
 }: BlockNoteProps) {
-  const isMd = useMediaQuery("(max-width: 768px)");
+  const isMd = useMediaQuery("(min-width: 768px)");
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
   const onChangeDebounced = useDebounceCallback(onChange, 5000);
@@ -124,9 +124,7 @@ function BlockNote({
     "#F7B27A",
     "#FDE272",
   ];
-  const initBlocks = initialContent
-    ? (JSON.parse(initialContent) as PartialBlock[])
-    : undefined;
+  const initBlocks = initialContent ? (JSON.parse(initialContent) as PartialBlock[]) : undefined;
   const editor: BlockNoteEditor = useCreateBlockNote({
     initialContent: initBlocks,
     uploadFile: handleUpload,
@@ -148,7 +146,7 @@ function BlockNote({
         onChange={() => {
           onChangeDebounced(JSON.stringify(editor.document));
         }}
-        sideMenu={isMd ? false : true}
+        sideMenu={isMd ? true : false}
       />
     </div>
   );

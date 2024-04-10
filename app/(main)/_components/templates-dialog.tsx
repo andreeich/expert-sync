@@ -20,6 +20,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface TemplateItemProps {
   name: string;
@@ -28,42 +29,38 @@ interface TemplateItemProps {
   onClick: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     template: string,
-    content?: string
+    content?: string,
   ) => void;
-  onRemove?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    template: string
-  ) => void;
+  onRemove?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, template: string) => void;
 }
 
-const TemplateItem = ({
-  name,
-  icon,
-  content,
-  onClick,
-  onRemove,
-}: TemplateItemProps) => {
+const TemplateItem = ({ name, icon, content, onClick, onRemove }: TemplateItemProps) => {
   return (
-    <div className="relative w-fit h-fit">
-      <button
-        className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center transition-all text-gray-900 dark:text-gray-50 bg-base-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:shadow-ring-gray-xs outline-none"
-        onClick={(e) => onClick(e, name, content)}
-      >
-        <Icon variant={icon} />
-        <p className="text-xs/xs md:text-sm/sm font-semibold line-clamp-2">
-          {name}
-        </p>
-      </button>
-      {onRemove && (
-        <Button
-          variant="tertiary color"
-          size="icon-xs"
-          className="absolute right-1 top-1"
-          onClick={(e) => onRemove(e, name)}
-        >
-          <Icon variant="delete" className="w-5 h-5" />
-        </Button>
-      )}
+    <div className="relative w-fit h-fit p-1">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] rounded-lg border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center transition-all text-gray-900 dark:text-gray-50 bg-base-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:shadow-ring-gray-xs outline-none"
+            onClick={(e) => onClick(e, name, content)}
+          >
+            <Icon variant={icon} />
+            <p className="text-xs/xs md:text-sm/sm font-semibold line-clamp-2">{name}</p>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{name}</p>
+        </TooltipContent>
+        {onRemove && (
+          <Button
+            variant="tertiary color"
+            size="icon-xs"
+            className="absolute right-1 top-1"
+            onClick={(e) => onRemove(e, name)}
+          >
+            <Icon variant="delete" className="w-5 h-5" />
+          </Button>
+        )}
+      </Tooltip>
     </div>
   );
 };
@@ -136,7 +133,15 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
   return (
     <Dialog open={templateDialog.isOpen} onOpenChange={templateDialog.onToggle}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="p-4 md:p-8">
+      <DialogContent
+        className="p-4 md:p-8"
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+      >
         <header className="space-y-2 pb-3">
           <h3 className="text-display-xs/display-xs md:text-display-sm/display-sm font-semibold tracking-tight text-gray-900 dark:text-gray-50">
             Choose a template

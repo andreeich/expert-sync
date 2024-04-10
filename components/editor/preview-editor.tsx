@@ -25,7 +25,7 @@ export interface EditorProps {
 
 const Editor = ({ initialContent }: EditorProps) => {
   const { resolvedTheme } = useTheme();
-  const isMd = useMediaQuery("(max-width: 768px)");
+  const isMd = useMediaQuery("(min-width: 768px)");
 
   const initBlocks = initialContent ? (JSON.parse(initialContent) as PartialBlock[]) : undefined;
   const editor: BlockNoteEditor = useCreateBlockNote({
@@ -37,7 +37,7 @@ const Editor = ({ initialContent }: EditorProps) => {
       <BlockNoteView
         editor={editor}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
-        sideMenu={isMd ? false : true}
+        sideMenu={isMd ? true : false}
         editable={false}
       />
     </div>
