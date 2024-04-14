@@ -21,19 +21,16 @@ const badgeGroupVariants = cva(
 );
 
 export interface BadgeGroupProps
-  extends React.HTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof badgeGroupVariants> {
-  asChild?: boolean;
-}
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeGroupVariants> {}
 
 const BadgeGroup = React.forwardRef<HTMLButtonElement, BadgeGroupProps>(
-  ({ className, size, asChild = false, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+  ({ className, size, children, ...props }, ref) => {
     return (
-      <Comp className={cn(badgeGroupVariants({ size, className }))} ref={ref} {...props}>
+      <div className={cn(badgeGroupVariants({ size, className }))} {...props}>
         {children}
         <Icon className="w-4 h-4" variant="arrow-right" />
-      </Comp>
+      </div>
     );
   },
 );

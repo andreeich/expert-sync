@@ -26,7 +26,7 @@ function BackgroundPattern() {
           />
         </mask>
         <g mask="url(#mask0_4931_463190)">
-          <g clip-path="url(#clip0_4931_463190)">
+          <g clipPath="url(#clip0_4931_463190)">
             <mask id="path-3-inside-1_4931_463190" fill="white">
               <path d="M192 0H288V96H192V0Z" />
             </mask>
@@ -1985,7 +1985,7 @@ function BackgroundPattern() {
             gradientTransform="translate(720 -0.000171661) rotate(90) scale(1440 751.588)"
           >
             <stop />
-            <stop offset="0.953125" stop-opacity="0" />
+            <stop offset="0.953125" stopOpacity="0" />
           </radialGradient>
           <clipPath id="clip0_4931_463190">
             <rect width="1920" height="1440" fill="white" />
@@ -2012,7 +2012,7 @@ function BackgroundPattern() {
           <rect width="960" height="960" fill="url(#paint0_radial_4940_405685)" />
         </mask>
         <g mask="url(#mask0_4940_405685)">
-          <g clip-path="url(#clip0_4940_405685)">
+          <g clipPath="url(#clip0_4940_405685)">
             <mask id="path-3-inside-1_4940_405685" fill="white">
               <path d="M0 0H96V96H0V0Z" />
             </mask>
@@ -2838,7 +2838,7 @@ function BackgroundPattern() {
             gradientTransform="translate(480 -0.000114441) rotate(90) scale(960 501.059)"
           >
             <stop />
-            <stop offset="0.953125" stop-opacity="0" />
+            <stop offset="0.953125" stopOpacity="0" />
           </radialGradient>
           <clipPath id="clip0_4940_405685">
             <rect width="960" height="960" fill="white" />

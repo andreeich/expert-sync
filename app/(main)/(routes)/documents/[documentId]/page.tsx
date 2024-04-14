@@ -20,6 +20,7 @@ import { ArchiveBanner } from "@/app/(main)/_components/archive-banner";
 import { toast } from "sonner";
 import { RoomProvider } from "@/liveblocks.config";
 import { ClientSideSuspense } from "@liveblocks/react";
+import { useHistoryUpdate } from "@/hooks/use-history-update";
 interface DocumentIdPageProps {
   params: {
     documentId: Id<"documents">;
@@ -29,6 +30,7 @@ interface DocumentIdPageProps {
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
   const router = useRouter();
+  // const historyUpdate = useHistoryUpdate();
 
   const updateContent = useMutation(api.documents.updateDocumentContent);
   const doc = useQuery(api.documents.getDocumentById, {
@@ -44,16 +46,17 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   );
 
   const onChangeContent = (content: string) => {
+    // if (historyUpdate.isUpdating) return;
     const promise = updateContent({
       id: params.documentId,
       content,
     });
 
-    // toast.promise(promise, {
-    //   loading: "Saving document...",
-    //   success: "Document saved",
-    //   error: "Failed to save document.",
-    // });
+    toast.promise(promise, {
+      loading: "Saving document...",
+      success: "Document saved",
+      error: "Failed to save document.",
+    });
   };
 
   useEffect(() => {

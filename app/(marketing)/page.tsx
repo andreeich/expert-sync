@@ -48,21 +48,21 @@ const MarketingPage = () => {
               </svg>
               <div className="relative w-[61.3%]">
                 <Image
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] w-[90%] dark:hidden"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] w-[90%] dark:hidden pointer-events-none"
                   src="/mockup-wrap-light.png"
                   alt="mockup-wrap"
                   width={282}
                   height={610}
                 />
                 <Image
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] w-[90%] hidden dark:block"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] w-[90%] hidden dark:block pointer-events-none"
                   src="/mockup-wrap-dark.png"
                   alt="mockup-wrap"
                   width={282}
                   height={610}
                 />
                 <Image
-                  className="w-full drop-shadow-2xl"
+                  className="w-full drop-shadow-2xl pointer-events-none"
                   src="/iphone-mockup.svg"
                   alt="iphone-mockup"
                   width={314}

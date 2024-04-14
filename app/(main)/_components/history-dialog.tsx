@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useHistoryUpdate } from "@/hooks/use-history-update";
 
 interface DocumentItemProps {
   title: string;
@@ -65,6 +66,7 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
   const router = useRouter();
 
   const historyDialog = useHistoryDialog();
+  const historyUpdate = useHistoryUpdate();
 
   const documentHistory = useQuery(api.documentHistory.getAllDocumentHistoryById, {
     documentId,
@@ -82,11 +84,16 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
 
     toast.promise(promise, {
       loading: "Restoring document...",
-      success: "Document restored successfully!",
+      success: "Refresh the page to apply changes!",
+      // success: "Document restored successfully!",
       error: "Failed to restore document.",
     });
 
     historyDialog.onClose();
+    // router.refresh();
+    // toast.info("If you want changes to be applied, reload the page.");
+    // router.replace(`/documents`);
+    // router.replace(`/documents/${documentId}`);
     // router.push(`/documents/${documentId}`);
   };
 

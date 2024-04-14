@@ -15,9 +15,10 @@ import { useEdgeStore } from "@/lib/edgestore";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useContent } from "@/hooks/use-content";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LiveblocksProvider from "@liveblocks/yjs";
 import { useRoom } from "@/liveblocks.config";
+import { useHistoryUpdate } from "@/hooks/use-history-update";
 
 export interface EditorProps {
   onChange: (value: string) => void;
@@ -28,13 +29,7 @@ export interface EditorProps {
   role?: string;
 }
 
-const Editor = ({
-  onChange,
-  initialContent,
-  editable,
-  username,
-  role,
-}: EditorProps) => {
+const Editor = ({ onChange, initialContent, editable, username, role }: EditorProps) => {
   const room = useRoom();
   const [doc, setDoc] = useState<Y.Doc>();
   const [provider, setProvider] = useState<any>();
@@ -86,17 +81,12 @@ type BlockNoteProps = {
   username: string;
 };
 
-function BlockNote({
-  doc,
-  provider,
-  initialContent,
-  username,
-  onChange,
-}: BlockNoteProps) {
+function BlockNote({ doc, provider, initialContent, username, onChange }: BlockNoteProps) {
   const isMd = useMediaQuery("(min-width: 768px)");
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
   const onChangeDebounced = useDebounceCallback(onChange, 5000);
+  const historyUpdate = useHistoryUpdate();
 
   const handleUpload = async (file: File) => {
     const response = await edgestore.publicFiles.upload({
@@ -137,6 +127,25 @@ function BlockNote({
       },
     },
   });
+  // const { isUpdating } = historyUpdate;
+  // const update = isUpdating === true;
+  // useEffect(() => console.log(update), [update]);
+  // const editor = useMemo(
+  //   () =>
+  //     BlockNoteEditor.create({
+  //       initialContent: initBlocks,
+  //       uploadFile: handleUpload,
+  //       collaboration: {
+  //         provider: provider,
+  //         fragment: doc.getXmlFragment("document-store"),
+  //         user: {
+  //           name: username,
+  //           color: userColors[Math.floor(Math.random() * userColors.length)],
+  //         },
+  //       },
+  //     }),
+  //   [update],
+  // );
 
   return (
     <div>
@@ -144,7 +153,8 @@ function BlockNote({
         editor={editor}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
         onChange={() => {
-          onChangeDebounced(JSON.stringify(editor.document));
+          if (JSON.stringify(editor.document) !== initialContent)
+            onChangeDebounced(JSON.stringify(editor.document));
         }}
         sideMenu={isMd ? true : false}
       />
