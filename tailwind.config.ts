@@ -187,6 +187,9 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       boxShadow: {
+        mockup:
+          "24.0376px 24.0376px 48.0751px -3.00469px rgba(16, 24, 40, 0.2), 12.0188px 12.0188px 24.0376px -1.50235px rgba(16, 24, 40, 0.08)",
+
         xs: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
         sm: "0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.10)",
         md: "0px 2px 4px -2px rgba(16, 24, 40, 0.06), 0px 4px 8px -2px rgba(16, 24, 40, 0.10)",

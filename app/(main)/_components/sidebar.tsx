@@ -204,9 +204,17 @@ const Sidebar = () => {
         <div className="px-4 md:pl-6 md:pr-5 flex justify-between">
           <Link href="/">
             <Image
-              src={theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"}
+              src="/logo.svg"
               width={161}
               height={32}
+              className="dark:hidden"
+              alt="ExpertSync"
+            />
+            <Image
+              src="/logo-white.svg"
+              width={161}
+              height={32}
+              className="hidden dark:block"
               alt="ExpertSync"
             />
           </Link>

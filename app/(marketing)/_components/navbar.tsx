@@ -18,22 +18,22 @@ export const Navbar = () => {
   const scrolled = useScrollTop();
   const router = useRouter();
   const theme = useTheme();
-
   return (
     <div
       className={cn(
-        "z-50 bg-base-white dark:bg-gray-950 fixed top-0 w-full h-[4rem] md:h-[5rem] border-b border-gray-200 dark:border-gray-800"
-        // scrolled && "border-b border-gray-200 shadow-sm"
+        "z-50  fixed top-0 w-full h-[4rem] md:h-[5rem] transition-all",
+        scrolled &&
+          "bg-base-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 shadow-sm",
       )}
     >
       <div className="container flex items-center justify-between h-full w-full">
         <Link href="/">
+          <Image src="/logo.svg" width={161} height={32} className="dark:hidden" alt="ExpertSync" />
           <Image
-            src={
-              theme.resolvedTheme === "light" ? "/logo.svg" : "/logo-white.svg"
-            }
+            src="/logo-white.svg"
             width={161}
             height={32}
+            className="hidden dark:block"
             alt="ExpertSync"
           />
         </Link>
@@ -53,12 +53,13 @@ export const Navbar = () => {
           )}
           {isAuthenticated && !isLoading && (
             <>
-              <Button variant="tertiary gray" size="sm" asChild>
+              <Button variant="tertiary gray" size="sm" className="text-right" asChild>
                 <Link href="/documents">Enter Dashboard</Link>
               </Button>
               <UserButton afterSignOutUrl="/" />
             </>
           )}
+          <ModeToggle />
         </div>
       </div>
     </div>
