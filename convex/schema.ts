@@ -36,6 +36,7 @@ export default defineSchema({
     documentId: v.id("documents"),
     userTokenId: v.string(),
     content: v.string(),
+    parentMessageId: v.optional(v.id("messages")),
   })
     .index("by_user", ["userTokenId"])
     .index("by_document", ["documentId"]),
