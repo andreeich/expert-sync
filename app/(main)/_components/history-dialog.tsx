@@ -149,7 +149,7 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
                 <DocumentItem
                   key={document._id}
                   title={document.createdBy}
-                  subtitle={new Date(document.timestamp).toDateString()}
+                  subtitle={new Date(document.timestamp).toLocaleString()}
                   onRestore={(e) => onRestore(e, document.content)}
                   onClick={(e) => onClick(e, document._id)}
                 />

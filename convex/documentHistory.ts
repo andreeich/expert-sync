@@ -65,9 +65,9 @@ export const addDocumentHistory = mutation({
       throw new Error("Not found");
     }
 
-    if (document.userTokenId !== user.tokenIdentifier) {
-      throw new Error("Unauthorized");
-    }
+    // if (document.userTokenId !== user.tokenIdentifier) {
+    //   throw new Error("Unauthorized");
+    // }
 
     const documentHistory = await ctx.db
       .query("documentHistory")
