@@ -259,7 +259,7 @@ export const restoreDocument = mutation({
 export const getMembersByDocument = query({
   args: { documentId: v.id("documents") },
   handler: async (ctx, args) => {
-    await getUser(ctx);
+    const user = await getUser(ctx);
 
     const document = await ctx.db.get(args.documentId);
 
@@ -273,14 +273,22 @@ export const getMembersByDocument = query({
       .collect();
     const members = await Promise.all(
       sharedDocument.map(async (doc) => {
-        return await ctx.db
+        const member = await ctx.db
           .query("users")
-          .withIndex("by_token", (q) =>
-            q.eq("tokenIdentifier", doc.userTokenId)
-          )
+          // .filter((q) => q.neq(q.field("tokenIdentifier"), user.tokenIdentifier))
+          .withIndex("by_token", (q) => q.eq("tokenIdentifier", doc.userTokenId))
+          .filter((q) => q.neq(q.field("tokenIdentifier"), user.tokenIdentifier))
           .unique();
-      })
+        return member;
+      }),
     );
+    if (user.tokenIdentifier !== document.userTokenId) {
+      const owner = await ctx.db
+        .query("users")
+        .withIndex("by_token", (q) => q.eq("tokenIdentifier", document.userTokenId))
+        .unique();
+      members.unshift(owner);
+    }
 
     return members;
   },

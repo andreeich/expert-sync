@@ -26,7 +26,7 @@ const MarketingPage = () => {
                 </h1>
               </div>
               <p className="text-lg/lg md:text-xl/xl text-gray-600 dark:text-gray-400">
-                Crafted by experts, ExpertSync provides you wiht the tools, insights, and
+                Crafted by experts, ExpertSync provides you with the tools, insights, and
                 breakthrough necessary to elevate your team&apos;s collaborative editing experience.
               </p>
             </div>

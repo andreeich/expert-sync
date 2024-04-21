@@ -23,16 +23,16 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const isMd = useMediaQuery("(min-width: 768px)");
   const userId = useStoreUserEffect();
 
+  if (!isAuthenticated && !isLoading) {
+    return redirect("/");
+  }
+
   if (isLoading || !userId) {
     return (
       <div className="h-full flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return redirect("/");
   }
 
   return (

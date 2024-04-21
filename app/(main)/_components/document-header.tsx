@@ -275,15 +275,23 @@ DocumentHeaderProps) => {
             >
               <ScrollArea className="w-full h-[13rem]">
                 {allMembers?.length ? (
-                  allMembers?.map((member) => (
-                    <MemberItem
-                      key={member!.tokenIdentifier}
-                      name={member?.name || "Anonymous"}
-                      avatarUrl={member?.picture}
-                      email={member?.email || "No email"}
-                      onRemove={() => onRemoveMember(member!.tokenIdentifier)}
-                    />
-                  ))
+                  allMembers?.map((member) => {
+                    return (
+                      member !== null && (
+                        <MemberItem
+                          key={member.tokenIdentifier}
+                          name={member.name || "Anonymous"}
+                          avatarUrl={member.picture}
+                          email={member.email || "No email"}
+                          onRemove={
+                            document.userTokenId !== member.tokenIdentifier
+                              ? () => onRemoveMember(member?.tokenIdentifier)
+                              : undefined
+                          }
+                        />
+                      )
+                    );
+                  })
                 ) : (
                   <div className="flex items-center px-4 py-2 h-[3.25rem]">
                     <p className="text-sm/sm text-gray-900 dark:text-gray-50 font-medium">
@@ -294,7 +302,7 @@ DocumentHeaderProps) => {
                 <ScrollBar orientation="vertical" />
               </ScrollArea>
               <hr className="border-gray-200 dark:border-gray-800" />
-              <form className="px-4 py-3 flex items-center">
+              <div className="px-4 py-3 flex items-center">
                 <Input
                   ref={memberEmailRef}
                   type="email"
@@ -310,7 +318,7 @@ DocumentHeaderProps) => {
                 >
                   <Icon variant="plus" />
                 </Button>
-              </form>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
           {isOwner && (

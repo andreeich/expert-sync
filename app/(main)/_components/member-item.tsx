@@ -7,7 +7,7 @@ export interface MemberItemProps {
   name: string;
   email: string;
   avatarUrl?: string;
-  onRemove: () => void;
+  onRemove?: () => void;
 }
 
 export const MemberItem = ({
@@ -43,9 +43,11 @@ export const MemberItem = ({
               {email}
             </p>
           </div>
-          <Button onClick={onRemove} variant="tertiary gray" size="icon-sm">
-            <Icon variant="delete" />
-          </Button>
+          {onRemove && (
+            <Button onClick={onRemove} variant="tertiary gray" size="icon-sm">
+              <Icon variant="delete" />
+            </Button>
+          )}
         </div>
       </div>
     </>
