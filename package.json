@@ -11,8 +11,8 @@
     "socket": "HOST=localhost PORT=1234 bunx y-websocket"
   },
   "dependencies": {
-    "@blocknote/core": "^0.12.1",
-    "@blocknote/react": "^0.12.2",
+    "@blocknote/core": "^0.12.4",
+    "@blocknote/react": "^0.12.4",
     "@clerk/clerk-react": "^4.26.3",
     "@clerk/nextjs": "^4.29.9",
     "@clerk/themes": "^1.7.9",
