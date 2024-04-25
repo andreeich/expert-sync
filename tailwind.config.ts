@@ -51,40 +51,6 @@ module.exports = {
         xs: "1.125rem",
       },
       colors: {
-        //   border: "hsl(var(--border))",
-        //   input: "hsl(var(--input))",
-        //   ring: "hsl(var(--ring))",
-        //   background: "hsl(var(--background))",
-        //   foreground: "hsl(var(--foreground))",
-        //   primary: {
-        //     DEFAULT: "hsl(var(--primary))",
-        //     foreground: "hsl(var(--primary-foreground))",
-        //   },
-        //   secondary: {
-        //     DEFAULT: "hsl(var(--secondary))",
-        //     foreground: "hsl(var(--secondary-foreground))",
-        //   },
-        //   destructive: {
-        //     DEFAULT: "hsl(var(--destructive))",
-        //     foreground: "hsl(var(--destructive-foreground))",
-        //   },
-        //   muted: {
-        //     DEFAULT: "hsl(var(--muted))",
-        //     foreground: "hsl(var(--muted-foreground))",
-        //   },
-        //   accent: {
-        //     DEFAULT: "hsl(var(--accent))",
-        //     foreground: "hsl(var(--accent-foreground))",
-        //   },
-        //   popover: {
-        //     DEFAULT: "hsl(var(--popover))",
-        //     foreground: "hsl(var(--popover-foreground))",
-        //   },
-        //   card: {
-        //     DEFAULT: "hsl(var(--card))",
-        //     foreground: "hsl(var(--card-foreground))",
-        //   },
-        // },
         base: {
           white: "#FFFFFF",
           black: "#000000",
@@ -104,18 +70,18 @@ module.exports = {
           950: "#0C111D",
         },
         brand: {
-          25: "#FCFAFF",
-          50: "#F9F5FF",
-          100: "#F4EBFF",
-          200: "#E9D7FE",
-          300: "#D6BBFB",
-          400: "#B692F6",
-          500: "#9E77ED",
-          600: "#7F56D9",
-          700: "#6941C6",
-          800: "#53389E",
-          900: "#2C1C5F",
-          950: "#2C1C5F",
+          25: "#F5F8FF",
+          50: "#EEF4FF",
+          100: "#E0EAFF",
+          200: "#C7D7FE",
+          300: "#A4BCFD",
+          400: "#8098F9",
+          500: "#6172F3",
+          600: "#444CE7",
+          700: "#3538CD",
+          800: "#2D31A6",
+          900: "#2D3282",
+          950: "#1F235B",
         },
         error: {
           25: "#FFFBFA",
@@ -198,11 +164,11 @@ module.exports = {
         "2xl": "0px 24px 48px -12px rgba(16, 24, 40, 0.18)",
         "3xl": "0px 32px 64px -12px rgba(16, 24, 40, 0.14)",
 
-        "ring-brand": "0px 0px 0px 4px rgba(158, 119, 237, 0.24)",
+        "ring-brand": "0px 0px 0px 4px rgba(97, 114, 243, 0.24)",
         "ring-brand-xs":
-          "0px 0px 0px 4px rgba(158, 119, 237, 0.24), 0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+          "0px 0px 0px 4px rgba(97, 114, 243, 0.24), 0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
         "ring-brand-sm":
-          "0px 0px 0px 4px rgba(158, 119, 237, 0.24), 0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.10)",
+          "0px 0px 0px 4px rgba(97, 114, 243, 0.24), 0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.10)",
 
         "ring-gray": "0px 0px 0px 4px rgba(152, 162, 179, 0.14)",
         "ring-gray-xs":
