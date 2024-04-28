@@ -2,8 +2,7 @@ import { createClient } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 
 const client = createClient({
-  publicApiKey:
-    "pk_dev_mbLkkkKgqclCHRxmp6UiOOlzRJwUjPdpASPo6mzdsiaRZezFoZYriwBapaobZDUo",
+  publicApiKey: "pk_dev_mbLkkkKgqclCHRxmp6UiOOlzRJwUjPdpASPo6mzdsiaRZezFoZYriwBapaobZDUo",
   // authEndpoint: "/api/liveblocks-auth",
   // throttle: 100,
 });
@@ -24,6 +23,17 @@ type Storage = {
   // animals: LiveList<string>,
   // ...
 };
+
+// type User = {
+//   id: string;
+
+//   // Example, use any JSON-compatible data in your metadata
+//   info: {
+//     name: string;
+//     avatar: string;
+//     colors: string[];
+//   };
+// };
 
 // Optionally, UserMeta represents static/readonly metadata on each user, as
 // provided by your own custom auth back end (if used). Useful for data that
@@ -54,5 +64,6 @@ export const {
 } = createRoomContext<
   Presence,
   Storage
+  // User
   /* UserMeta, RoomEvent, ThreadMetadata */
 >(client);

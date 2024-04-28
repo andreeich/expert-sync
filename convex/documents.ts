@@ -102,6 +102,7 @@ export const createDocument = mutation({
       userTokenId: user.tokenIdentifier,
       isArchived: false,
       content,
+      isOpened: false,
     });
 
     return document;
@@ -130,7 +131,7 @@ export const deleteDocument = mutation({
     Promise.all(
       sharedDocuments.map((sharedDocument) => {
         ctx.db.delete(sharedDocument._id);
-      })
+      }),
     );
     const messages = await ctx.db
       .query("messages")
@@ -139,7 +140,7 @@ export const deleteDocument = mutation({
     Promise.all(
       messages.map((message) => {
         ctx.db.delete(message._id);
-      })
+      }),
     );
 
     await ctx.db.delete(args.id);
@@ -168,6 +169,32 @@ export const updateDocumentTitle = mutation({
 
     const updatedDocument = await ctx.db.patch(args.id, {
       title: args.title,
+    });
+
+    return updatedDocument;
+  },
+});
+
+export const updateDocumentIsOpened = mutation({
+  args: {
+    id: v.id("documents"),
+    isOpened: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const user = await getUser(ctx);
+
+    const document = await ctx.db.get(args.id);
+
+    if (!document) {
+      throw new Error("Not found");
+    }
+
+    if (document.userTokenId !== user.tokenIdentifier) {
+      throw new Error("Unauthorized");
+    }
+
+    const updatedDocument = await ctx.db.patch(args.id, {
+      isOpened: args.isOpened,
     });
 
     return updatedDocument;

@@ -22,6 +22,12 @@ import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
+import { useRoom } from "@/liveblocks.config";
+import * as Y from "yjs";
+import LiveblocksProvider from "@liveblocks/yjs";
+import { useEditor } from "@/hooks/use-editor";
+import { PartialBlock } from "@blocknote/core";
+
 interface TemplateItemProps {
   name: string;
   icon: string;
@@ -111,9 +117,10 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
   const onCreate = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     name?: string,
-    content?: string
+    content?: string,
   ) => {
     event.stopPropagation();
+    // console.log(content);
     const promise = create({ template: name, content }).then((documentId) => {
       templateDialog.onClose();
       router.push(`/documents/${documentId}`);
@@ -126,10 +133,7 @@ const TemplatesDialog = ({ children }: TemplatesDialogProps) => {
     });
   };
 
-  const onRemove = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    template: string
-  ) => {
+  const onRemove = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, template: string) => {
     event.stopPropagation();
     const promise = removeTemplate({ name: template });
 

@@ -43,6 +43,7 @@ import { DropdownItem } from "./dropdown-item";
 import { MemberItem } from "./member-item";
 import { useContent } from "@/hooks/use-content";
 import { HistoryDialog } from "./history-dialog";
+import { useEditor } from "@/hooks/use-editor";
 
 export interface DocumentHeaderProps {
   document: Doc<"documents">;
@@ -96,7 +97,7 @@ DocumentHeaderProps) => {
   const isOwner = role === "owner";
   const isPreview = role === "preview";
 
-  const content = useContent();
+  const Editor = useEditor();
 
   const onAddNewMember = () => {
     if (memberEmail === "") return;
@@ -213,10 +214,10 @@ DocumentHeaderProps) => {
   };
 
   const onAddDocumentHistory = () => {
-    if (!document.content) return;
+    if (!Editor) return;
     const promise = addDocumentHistory({
       documentId,
-      content: document.content,
+      content: JSON.stringify(Editor.editor?.document, null, 2),
     });
 
     toast.promise(promise, {

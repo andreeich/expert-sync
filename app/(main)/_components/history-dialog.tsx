@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useHistoryUpdate } from "@/hooks/use-history-update";
+import { useEditor } from "@/hooks/use-editor";
+import { PartialBlock } from "@blocknote/core";
 
 interface DocumentItemProps {
   title: string;
@@ -74,18 +76,21 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
   const updateContent = useMutation(api.documents.updateDocumentContent);
 
   const params = useParams();
+  const Editor = useEditor();
 
   const [search, setSearch] = useState("");
 
   const onRestore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, content: string) => {
     event.stopPropagation();
 
-    const promise = updateContent({ id: documentId, content });
+    const promise = updateContent({ id: documentId, content }).then(() => {
+      Editor.init(JSON.parse(content) as PartialBlock[]);
+    });
 
     toast.promise(promise, {
       loading: "Restoring document...",
-      success: "Refresh the page to apply changes!",
-      // success: "Document restored successfully!",
+      // success: "Refresh the page to apply changes!",
+      success: "Document restored successfully!",
       error: "Failed to restore document.",
     });
 

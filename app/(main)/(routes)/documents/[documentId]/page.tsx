@@ -30,9 +30,11 @@ interface DocumentIdPageProps {
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
   const router = useRouter();
+  const [initContent, setInitContent] = useState<string | undefined>(undefined);
   // const historyUpdate = useHistoryUpdate();
 
   const updateContent = useMutation(api.documents.updateDocumentContent);
+  const updateIsOpened = useMutation(api.documents.updateDocumentIsOpened);
   const doc = useQuery(api.documents.getDocumentById, {
     documentId: params.documentId,
   });
@@ -58,6 +60,22 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       error: "Failed to save document.",
     });
   };
+
+  const onOpen = () => {
+    const promise = updateIsOpened({
+      id: params.documentId,
+      isOpened: true,
+    });
+  };
+
+  useEffect(() => {
+    if (doc?.isOpened === false) {
+      setInitContent(doc.content);
+      onOpen();
+    } else {
+      setInitContent(undefined);
+    }
+  }, [doc]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -88,7 +106,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                 {() => (
                   <Editor
                     onChange={onChangeContent}
-                    initialContent={doc.content}
+                    initialContent={initContent}
                     username={user?.fullName || "Anonymous"}
                     room={doc._id}
                     role={role}

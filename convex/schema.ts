@@ -7,6 +7,7 @@ export default defineSchema({
     title: v.string(),
     content: v.optional(v.string()),
     isArchived: v.boolean(),
+    isOpened: v.boolean(),
   }).index("by_user", ["userTokenId"]),
   users: defineTable({
     tokenIdentifier: v.string(),
