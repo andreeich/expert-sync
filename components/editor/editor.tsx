@@ -21,6 +21,7 @@ import { useRoom } from "@/liveblocks.config";
 import { useHistoryUpdate } from "@/hooks/use-history-update";
 import { useEditor } from "@/hooks/use-editor";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 export interface EditorProps {
   onChange: (value: string) => void;
@@ -93,12 +94,21 @@ function BlockNote({ doc, provider, initialContent, username, onChange }: BlockN
   const params = useParams();
 
   const handleUpload = async (file: File) => {
-    const response = await edgestore.publicFiles.upload({
+    const promise = edgestore.publicFiles.upload({
       file,
     });
 
+    toast.promise(promise, {
+      loading: "Uploading the picture...",
+      success: "Picture uploaded.",
+      error: "Failed to upload the picture.",
+    });
+
+    const response = await promise;
+
     return response.url;
   };
+
   const userColors = [
     "#ACDC79",
     "#A6EF67",

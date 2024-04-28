@@ -87,6 +87,10 @@
 .bn-container .bn-image-toolbar {
   @apply !max-w-[500px] !w-[calc(100vw_-_2rem)];
 }
+/* image panel */
+.bn-container .bn-image-panel {
+  @apply max-w-[calc(100vw_-_2rem)];
+}
 /* toolbar */
 .bn-container .bn-toolbar button {
   @apply flex-shrink-0;
@@ -100,6 +104,7 @@
 }
 
 */
+
 /* dropdown */
 .bn-container .mantine-Menu-dropdown {
   @apply shadow-md;
