@@ -114,7 +114,7 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
   return (
     <Dialog open={historyDialog.isOpen} onOpenChange={historyDialog.onToggle}>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <DialogTrigger asChild>{children}</DialogTrigger>
         </TooltipTrigger>
         <TooltipContent>

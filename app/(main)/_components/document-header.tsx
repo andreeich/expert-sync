@@ -252,7 +252,7 @@ DocumentHeaderProps) => {
         )} */}
           <DropdownMenu>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button className="group" variant="secondary" size="sm" asChild>
                   <DropdownMenuTrigger>
                     <span className="hidden md:inline">Members</span>
@@ -331,7 +331,7 @@ DocumentHeaderProps) => {
           )}
           <DropdownMenu>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button variant="tertiary gray" size="icon-sm" asChild>
                   <DropdownMenuTrigger>
                     <Icon variant="dots-vertical" />
