@@ -54,6 +54,31 @@ export const getHistoryById = query({
   },
 });
 
+export const getDocumentByHistoryId = query({
+  args: { documentHistoryId: v.id("documentHistory") },
+  handler: async (ctx, args) => {
+    const user = await getUser(ctx);
+
+    const documentHistory = await ctx.db.get(args.documentHistoryId);
+
+    if (!documentHistory) {
+      throw new Error("Not found");
+    }
+
+    const document = await ctx.db.get(documentHistory.documentId);
+
+    if (!document) {
+      throw new Error("Not found");
+    }
+
+    if (document.userTokenId !== user.tokenIdentifier) {
+      throw new Error("Unauthorized");
+    }
+
+    return document;
+  },
+});
+
 export const addDocumentHistory = mutation({
   args: { documentId: v.id("documents"), content: v.string() },
   handler: async (ctx, args) => {

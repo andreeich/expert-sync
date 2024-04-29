@@ -21,16 +21,27 @@ import { useRoom } from "@/liveblocks.config";
 
 export interface EditorProps {
   initialContent?: string;
+  historyContent?: string;
 }
 
-const Editor = ({ initialContent }: EditorProps) => {
+const Editor = ({ initialContent, historyContent }: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const isMd = useMediaQuery("(min-width: 768px)");
 
   const initBlocks = initialContent ? (JSON.parse(initialContent) as PartialBlock[]) : undefined;
+  const historyBlocks = historyContent ? (JSON.parse(historyContent) as PartialBlock[]) : undefined;
+
+  let finalBlocks = undefined;
+  if (!initBlocks && historyBlocks) finalBlocks = historyBlocks;
+  else if (initBlocks && !historyBlocks) finalBlocks = initBlocks;
+  else
+    finalBlocks =
+      !initBlocks || !historyBlocks ? undefined : compareBlocks(initBlocks, historyBlocks);
+
   const editor: BlockNoteEditor = useCreateBlockNote({
-    initialContent: initBlocks,
+    initialContent: finalBlocks,
   });
+  console.log("finalBlocks :>> ", finalBlocks);
 
   return (
     <div>
@@ -42,6 +53,53 @@ const Editor = ({ initialContent }: EditorProps) => {
       />
     </div>
   );
+};
+
+const compareBlocks = (init: PartialBlock[], history: PartialBlock[]) => {
+  // finding new blocks
+  // history?.forEach((historyBlock) => {
+  //   const index = init?.find((initBlock) => initBlock.id === historyBlock.id);
+  //   if (!index) historyBlock.props?.backgroundColor === "green";
+  // });
+  // // finding removed blocks
+  // // init?.forEach((initBlock) => {
+  // //   const index = history?.find((historyBlock) => initBlock.id === historyBlock.id);
+  // //   if (!index) historyBlock.props?.backgroundColor === "green";
+  // // });
+
+  // creating new version by concatenating init and history ones
+  const result = [];
+  for (let i = 0; i < init.length; i++) {
+    if (i >= history.length) {
+      init[i].props!.backgroundColor = "red";
+      result.push(init[i]);
+      console.log("1");
+      continue;
+    }
+    if (compare(init[i], history[i])) {
+      result.push(init[i]);
+    } else {
+      init[i].props!.backgroundColor = "red";
+      history[i].props!.backgroundColor = "green";
+      result.push(history[i], init[i]);
+    }
+  }
+
+  return result;
+};
+
+const compare = (prev: PartialBlock, next: PartialBlock) => {
+  if (prev.id === next.id && JSON.stringify(prev.content) === JSON.stringify(next.content)) {
+    return true;
+  } else {
+    console.log("block :>> ", {
+      prevId: prev.id,
+      nextId: next.id,
+      prevContent: prev.content,
+      nextContent: next.content,
+    });
+    return false;
+  }
 };
 
 export const EditorSkeleton = () => {

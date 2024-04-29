@@ -54,11 +54,11 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
       content,
     });
 
-    toast.promise(promise, {
-      loading: "Saving document...",
-      success: "Document saved",
-      error: "Failed to save document.",
-    });
+    // toast.promise(promise, {
+    //   loading: "Saving document...",
+    //   success: "Document saved",
+    //   error: "Failed to save document.",
+    // });
   };
 
   const onOpen = () => {

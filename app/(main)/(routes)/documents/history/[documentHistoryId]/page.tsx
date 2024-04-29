@@ -22,6 +22,7 @@ import { RoomProvider } from "@/liveblocks.config";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RestoreBanner } from "@/app/(main)/_components/restore-banner";
 import { HistoryHeader } from "@/app/(main)/_components/history-header";
+import { useEditor } from "@/hooks/use-editor";
 
 interface DocumentHistoryIdPageProps {
   params: {
@@ -32,6 +33,9 @@ interface DocumentHistoryIdPageProps {
 const DocumentHistoryIdPage = ({ params }: DocumentHistoryIdPageProps) => {
   const router = useRouter();
   const history = useQuery(api.documentHistory.getHistoryById, {
+    documentHistoryId: params.documentHistoryId,
+  });
+  const doc = useQuery(api.documentHistory.getDocumentByHistoryId, {
     documentHistoryId: params.documentHistoryId,
   });
 
@@ -66,12 +70,15 @@ const DocumentHistoryIdPage = ({ params }: DocumentHistoryIdPageProps) => {
         {history ? (
           <>
             <HistoryHeader documentId={history.documentId} />
-            <Editor initialContent={history.content} />
+            <Editor initialContent={doc?.content} historyContent={history.content} />
           </>
         ) : (
           <>
             <HistoryHeader.Skeleton />
-            <EditorSkeleton />
+            <div className="grid grid-cols-2">
+              <EditorSkeleton />
+              <EditorSkeleton />
+            </div>
           </>
         )}
       </section>
