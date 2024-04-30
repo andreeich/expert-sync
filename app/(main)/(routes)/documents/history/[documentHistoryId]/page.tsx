@@ -75,10 +75,7 @@ const DocumentHistoryIdPage = ({ params }: DocumentHistoryIdPageProps) => {
         ) : (
           <>
             <HistoryHeader.Skeleton />
-            <div className="grid grid-cols-2">
-              <EditorSkeleton />
-              <EditorSkeleton />
-            </div>
+            <EditorSkeleton />
           </>
         )}
       </section>
