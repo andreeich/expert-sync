@@ -15,6 +15,8 @@ import {
   AlertDialogTrigger,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useEditor } from "@/hooks/use-editor";
+import { PartialBlock } from "@blocknote/core";
 
 interface RestoreBannerProps {
   documentId: Id<"documents">;
@@ -30,6 +32,7 @@ export const RestoreBanner = ({
   content,
 }: RestoreBannerProps) => {
   const router = useRouter();
+  const Editor = useEditor();
 
   const updateContent = useMutation(api.documents.updateDocumentContent);
 
@@ -38,9 +41,8 @@ export const RestoreBanner = ({
   const onRestore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
 
-    const promise = updateContent({
-      id: documentId,
-      content,
+    const promise = updateContent({ id: documentId, content }).then(() => {
+      Editor.init(JSON.parse(content) as PartialBlock[]);
     });
 
     toast.promise(promise, {
