@@ -80,9 +80,19 @@ const compareBlocks = (init: PartialBlock[], history: PartialBlock[]) => {
       result.push(init[i]);
     } else {
       init[i].props!.backgroundColor = "red";
+      // @ts-ignore valid prop
+      init[i].props!.textColor = "red";
       history[i].props!.backgroundColor = "green";
+      // @ts-ignore valid prop
+      history[i].props!.textColor = "green";
       result.push(history[i], init[i]);
     }
+  }
+  for (let i = init.length; i < history.length; i++) {
+    history[i].props!.backgroundColor = "red";
+    // @ts-ignore valid prop
+    history[i].props!.textColor = "red";
+    result.push(history[i]);
   }
 
   return result;
