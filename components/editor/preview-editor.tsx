@@ -104,7 +104,8 @@ const styleBlock = (block: PartialBlock, color: string) => {
 
 const checkBlock = (block: PartialBlock) => {
   const str = JSON.stringify(block.content);
-  if (str === undefined || str === "[]" || str.search(/"text":"\s*"/gm) !== -1) return false;
+  if (typeof str !== "string") return true;
+  if (str === "[]" || str?.search(/"text":"\s*"/gm) !== -1) return false;
   return true;
 };
 
