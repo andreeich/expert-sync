@@ -41,7 +41,7 @@ const Editor = ({ initialContent, historyContent }: EditorProps) => {
   const editor: BlockNoteEditor = useCreateBlockNote({
     initialContent: finalBlocks,
   });
-  console.log("finalBlocks :>> ", finalBlocks);
+  // console.log("finalBlocks :>> ", finalBlocks);
 
   return (
     <div>
@@ -71,43 +71,53 @@ const compareBlocks = (init: PartialBlock[], history: PartialBlock[]) => {
   const result = [];
   for (let i = 0; i < init.length; i++) {
     if (i >= history.length) {
-      init[i].props!.backgroundColor = "red";
+      styleBlock(init[i], "red");
+
       result.push(init[i]);
-      console.log("1");
       continue;
     }
     if (compare(init[i], history[i])) {
       result.push(init[i]);
     } else {
-      init[i].props!.backgroundColor = "red";
-      // @ts-ignore valid prop
-      init[i].props!.textColor = "red";
-      history[i].props!.backgroundColor = "green";
-      // @ts-ignore valid prop
-      history[i].props!.textColor = "green";
-      result.push(history[i], init[i]);
+      styleBlock(history[i], "green");
+      styleBlock(init[i], "red");
+
+      if (checkBlock(history[i])) result.push(history[i]);
+      if (checkBlock(init[i])) result.push(init[i]);
+      // result.push(history[i], init[i]);
     }
   }
   for (let i = init.length; i < history.length; i++) {
-    history[i].props!.backgroundColor = "red";
-    // @ts-ignore valid prop
-    history[i].props!.textColor = "red";
+    styleBlock(history[i], "green");
     result.push(history[i]);
   }
 
   return result;
 };
 
+const styleBlock = (block: PartialBlock, color: string) => {
+  block.props!.backgroundColor = color;
+  // @ts-ignore valid prop
+  block.props!.textColor = color;
+  return block;
+};
+
+const checkBlock = (block: PartialBlock) => {
+  const str = JSON.stringify(block.content);
+  if (str === "[]" || str.search(/"text":"\s*"/gm) !== -1) return false;
+  return true;
+};
+
 const compare = (prev: PartialBlock, next: PartialBlock) => {
   if (prev.id === next.id && JSON.stringify(prev.content) === JSON.stringify(next.content)) {
     return true;
   } else {
-    console.log("block :>> ", {
-      prevId: prev.id,
-      nextId: next.id,
-      prevContent: prev.content,
-      nextContent: next.content,
-    });
+    // console.log("block :>> ", {
+    //   prevId: prev.id,
+    //   nextId: next.id,
+    //   prevContent: prev.content,
+    //   nextContent: next.content,
+    // });
     return false;
   }
 };
