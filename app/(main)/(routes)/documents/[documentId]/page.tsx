@@ -26,7 +26,7 @@ interface DocumentIdPageProps {
     documentId: Id<"documents">;
   };
 }
-// TODO: change page title to the document name
+
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
   const router = useRouter();

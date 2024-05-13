@@ -1,20 +1,16 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Block, BlockNoteEditor, PartialBlock } from "@blocknote/core";
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 import "./editor.css";
 
 import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
-import { SocketIOProvider } from "y-socket.io";
-import { WebrtcProvider } from "y-webrtc";
 
 import { useEdgeStore } from "@/lib/edgestore";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useContent } from "@/hooks/use-content";
 import { useEffect, useMemo, useState } from "react";
 import LiveblocksProvider from "@liveblocks/yjs";
 import { useRoom } from "@/liveblocks.config";
@@ -130,7 +126,6 @@ function BlockNote({ doc, provider, initialContent, username, onChange }: BlockN
   ];
 
   const editor: BlockNoteEditor = useCreateBlockNote({
-    // initialContent: initBlocks,
     uploadFile: handleUpload,
     collaboration: {
       provider: provider,
@@ -141,27 +136,6 @@ function BlockNote({ doc, provider, initialContent, username, onChange }: BlockN
       },
     },
   });
-  // const store = doc.getXmlFragment("document-store");
-  // console.log(doc.getXmlFragment("document-store").toJSON());
-  // const { isUpdating } = historyUpdate;
-  // const update = isUpdating === true;
-  // useEffect(() => console.log(update), [update]);
-  // const editor = useMemo(
-  //   () =>
-  //     BlockNoteEditor.create({
-  //       initialContent: initBlocks,
-  //       uploadFile: handleUpload,
-  //       collaboration: {
-  //         provider: provider,
-  //         fragment: doc.getXmlFragment("document-store"),
-  //         user: {
-  //           name: username,
-  //           color: userColors[Math.floor(Math.random() * userColors.length)],
-  //         },
-  //       },
-  //     }),
-  //   [update],
-  // );
 
   const docId = useMemo(() => {
     return Editor.documentId;
@@ -184,7 +158,6 @@ function BlockNote({ doc, provider, initialContent, username, onChange }: BlockN
 
   if (initBlocks) {
     Editor.init(initBlocks);
-    // console.log(initBlocks);
   }
 
   return (
@@ -192,46 +165,6 @@ function BlockNote({ doc, provider, initialContent, username, onChange }: BlockN
       <BlockNoteView
         editor={editor}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
-        onChange={() => {
-          // if (JSON.stringify(editor.document) !== initialContent)
-          //   onChangeDebounced(JSON.stringify(editor.document));
-          // const store = doc.getXmlFragment("document-store");
-          // const el = new Y.XmlElement(
-          //   '<blockgroup><blockcontainer backgroundColor="default" id="c92e7227-b12e-4f41-a86e-59497475f8f3" textColor="default"><paragraph textAlignment="left">dsssdffdfdsdf</paragraph></blockcontainer><blockcontainer backgroundColor="default" id="4af9bd66-a891-4ce1-b6c3-857506034a1e" textColor="default"><paragraph textAlignment="left"></paragraph></blockcontainer></blockgroup>',
-          // );
-          // store.delete();
-          // store.insert(0, [el]);
-          // console.log(store.toJSON());
-          // store.insert(0, [new Y.XmlText("text")]);
-        }}
-        onFocus={() => {
-          // const store = doc.getXmlFragment("document-store");
-          // const el = new Y.XmlText(
-          //   '<blockgroup><blockcontainer backgroundColor="default" id="c92e7227-b12e-4f41-a86e-59497475f8f3" textColor="default"><paragraph textAlignment="left">dsssdffdfdsdf</paragraph></blockcontainer><blockcontainer backgroundColor="default" id="4af9bd66-a891-4ce1-b6c3-857506034a1e" textColor="default"><paragraph textAlignment="left"></paragraph></blockcontainer></blockgroup>',
-          // );
-          // // const node = new Y.XmlElement("blockgroup");
-          // // node.insert(0, [new Y.XmlElement("blockcontainer")]);
-          // store?.delete(0);
-          // store?.insert(0, [el]);
-          // console.log(store?.toJSON());
-          // editor.forEachBlock((block) => {
-          //   editor.removeBlocks([block.id]);
-          //   // editor.insertBlocks([{ type: "paragraph", content: "Hello world" }], block, "after");
-          //   // console.log(block.content);
-          // });
-          // ! remove all blocks
-          // editor.document.forEach((block) => {
-          //   editor.removeBlocks([block.id]);
-          // });
-          // Editor.clear();
-          // console.log(Editor.documentId);
-          // ! insert before all blocks
-          // editor.document.forEach((block) => {
-          //   editor.insertBlocks([{ type: "paragraph", content: "Hello World" }], block, "before");
-          // });
-          // const doc = editor.document;
-          // console.log(doc);
-        }}
         sideMenu={isMd ? true : false}
       />
     </div>
