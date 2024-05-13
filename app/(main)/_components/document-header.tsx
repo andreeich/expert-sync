@@ -32,12 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { DropdownItem } from "./dropdown-item";
 import { MemberItem } from "./member-item";
@@ -48,15 +43,9 @@ import { useEditor } from "@/hooks/use-editor";
 export interface DocumentHeaderProps {
   document: Doc<"documents">;
   role?: string;
-  // onApply?: (content: string) => void;
 }
 
-export const DocumentHeader = ({
-  document,
-  role,
-}: // onApply,
-DocumentHeaderProps) => {
-  // TODO: Clean it up
+export const DocumentHeader = ({ document, role }: DocumentHeaderProps) => {
   const { user } = useUser();
   const router = useRouter();
   const documentId = document._id;
@@ -126,7 +115,6 @@ DocumentHeaderProps) => {
     }
   };
 
-  // TODO: redirect if the user is a member
   const onRemoveMember = (userTokenId: string) => {
     const promise = removeMember({
       documentId,
@@ -148,8 +136,6 @@ DocumentHeaderProps) => {
       success: "Document moved to trash!",
       error: "Failed to archive document.",
     });
-
-    // router.push("/documents");
   };
 
   const onRename = () => {
@@ -242,14 +228,6 @@ DocumentHeaderProps) => {
 
       {!isPreview && (
         <menu className="flex items-center gap-3">
-          {/* {onApply && content.content.length > 0 && (
-          <Button
-            size="icon-sm"
-            onClick={() => onApply(JSON.stringify(content.content, null, 2))}
-          >
-            <Icon variant="check-circle" />
-          </Button>
-        )} */}
           <DropdownMenu>
             <Tooltip>
               <TooltipTrigger asChild>

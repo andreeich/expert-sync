@@ -1,32 +1,15 @@
 "use client";
 
-import { useMutation } from "convex/react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "usehooks-ts";
 
-import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
 import { TemplatesDialog } from "../../_components/templates-dialog";
 
 const DocumentsPage = () => {
   const router = useRouter();
-  const create = useMutation(api.documents.createDocument);
   const isMd = useMediaQuery("(min-width: 768px)");
-
-  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, template: string) => {
-    event.stopPropagation();
-    const promise = create({ template }).then((documentId) =>
-      router.push(`/documents/${documentId}`),
-    );
-
-    toast.promise(promise, {
-      loading: "Creating a new document...",
-      success: "New document created!",
-      error: "Failed to create a new document.",
-    });
-  };
 
   return (
     <main className="h-screen md:h-full flex flex-col items-center justify-center gap-8 md:gap-12 container pt-24 pb-12 md:pt-8">

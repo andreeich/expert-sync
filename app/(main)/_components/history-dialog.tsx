@@ -1,27 +1,16 @@
 "use client";
 
 import { Icon } from "@/components/icon";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
-import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useHistoryDialog } from "@/hooks/use-history-dialog";
 import { Id } from "@/convex/_generated/dataModel";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useHistoryUpdate } from "@/hooks/use-history-update";
 import { useEditor } from "@/hooks/use-editor";
 import { PartialBlock } from "@blocknote/core";
 
@@ -68,17 +57,13 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
   const router = useRouter();
 
   const historyDialog = useHistoryDialog();
-  const historyUpdate = useHistoryUpdate();
 
   const documentHistory = useQuery(api.documentHistory.getAllDocumentHistoryById, {
     documentId,
   });
   const updateContent = useMutation(api.documents.updateDocumentContent);
 
-  const params = useParams();
   const Editor = useEditor();
-
-  const [search, setSearch] = useState("");
 
   const onRestore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, content: string) => {
     event.stopPropagation();
@@ -89,17 +74,11 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
 
     toast.promise(promise, {
       loading: "Restoring document...",
-      // success: "Refresh the page to apply changes!",
       success: "Document restored successfully!",
       error: "Failed to restore document.",
     });
 
     historyDialog.onClose();
-    // router.refresh();
-    // toast.info("If you want changes to be applied, reload the page.");
-    // router.replace(`/documents`);
-    // router.replace(`/documents/${documentId}`);
-    // router.push(`/documents/${documentId}`);
   };
 
   const onClick = (
@@ -139,14 +118,6 @@ const HistoryDialog = ({ children, documentId }: HistoryDialogProps) => {
           </p>
         </header>
         <main>
-          {/* <section className="px-4 md:px-8 py-3 flex items-center">
-            <Input
-              placeholder="Search"
-              className="z-[5] w-full"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </section> */}
           <hr className="border-gray-200 dark:border-gray-800" />
           <ScrollArea className="w-full h-[13rem]">
             {documentHistory?.length ? (

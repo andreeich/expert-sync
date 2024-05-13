@@ -1,20 +1,12 @@
 "use client";
 
 import { Icon } from "@/components/icon";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useArchiveDialog } from "@/hooks/use-archive-dialog";
 import { Id } from "@/convex/_generated/dataModel";
 import { Input } from "@/components/ui/input";

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -16,7 +16,6 @@ import { TemplatesDialog } from "./templates-dialog";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSidebarSheet } from "@/hooks/use-sidebar-sheet";
-import { useTemplateDialog } from "@/hooks/use-template-dialog";
 import { ArchiveDialog } from "./archive-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTheme } from "next-themes";
@@ -36,23 +35,20 @@ const NavItem = React.forwardRef<HTMLButtonElement, NavItemProps>(
       <button
         className={cn(
           "flex items-center py-2 px-3 gap-2 w-full h-10 bg-base-white dark:bg-gray-950 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:shadow-ring-gray transition-all",
-          active && "bg-gray-50 dark:bg-gray-800"
+          active && "bg-gray-50 dark:bg-gray-800",
         )}
         onClick={onClick}
         ref={ref}
       >
         <span className="flex items-center gap-3 flex-1">
-          <Icon
-            className="fill-gray-500"
-            variant={iconVariant ? iconVariant : "file-04"}
-          />
+          <Icon className="fill-gray-500" variant={iconVariant ? iconVariant : "file-04"} />
           <span className="text-md/md font-semibold text-gray-700 dark:text-gray-300 line-clamp-1 break-all">
             {label}
           </span>
         </span>
       </button>
     );
-  }
+  },
 );
 
 const NavItemSkeleton = () => {
@@ -96,9 +92,7 @@ const NavItemList = ({ search }: NavItemListProps) => {
           .filter((document) => {
             if (!document) return false;
             return search
-              ? document.title
-                  .toLocaleLowerCase()
-                  .includes(search.toLocaleLowerCase())
+              ? document.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())
               : true;
           })
           .map((document) => {
@@ -135,7 +129,7 @@ const Account = ({ className }: AccountProps) => {
     <div
       className={cn(
         "flex gap-4 pl-2 pt-6 items-center justify-between border-t border-gray-200 dark:border-gray-800",
-        className
+        className,
       )}
     >
       <div className="flex gap-3">
@@ -187,9 +181,7 @@ Account.Skeleton = function AccountSkeleton() {
 };
 
 const Sidebar = () => {
-  const router = useRouter();
   const [search, setSearch] = useState("");
-  const theme = useTheme();
   const clerk = useClerk();
   const sidebarSheet = useSidebarSheet();
 

@@ -2,42 +2,13 @@
 
 import React from "react";
 
-import { useMutation, useQuery } from "convex/react";
-import { useRef, useState } from "react";
+import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@clerk/clerk-react";
-import { useRouter } from "next/navigation";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icon";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
-import { z } from "zod";
-import { Input } from "@/components/ui/input";
-
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-import { DropdownItem } from "./dropdown-item";
-import { MemberItem } from "./member-item";
-import { useContent } from "@/hooks/use-content";
-import { HistoryDialog } from "./history-dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export interface HistoryHeaderProps {
@@ -68,12 +39,16 @@ export const HistoryHeader = ({ documentId }: HistoryHeaderProps) => {
         <HoverCardContent>
           <div className="flex flex-col gap-2">
             <span>
+              <span className="font-bold">Regular</span> text shows that the{" "}
+              <span className="font-bold">block will remain</span>
+            </span>
+            <span>
               <span className="bg-success-100 text-success-700 dark:bg-success-300 dark:text-success-800 font-bold">
                 Green
               </span>{" "}
               text shows that the{" "}
               <span className="bg-success-100 text-success-700 dark:bg-success-300 dark:text-success-800 font-bold">
-                block will remain
+                block will be added
               </span>
             </span>
             <span>
