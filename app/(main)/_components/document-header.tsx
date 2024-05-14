@@ -177,7 +177,7 @@ export const DocumentHeader = ({ document, role }: DocumentHeaderProps) => {
     ) {
       const promise = addTemplate({
         name: templateName.trim(),
-        content: document.content || "[]",
+        content: JSON.stringify(Editor.editor?.document, null, 2),
         icon: "file-05",
       });
 

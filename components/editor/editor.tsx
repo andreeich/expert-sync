@@ -143,11 +143,11 @@ function BlockNote({ doc, provider, initialContent, username, onChange }: BlockN
 
   useEffect(() => {
     if (Editor.editor === undefined) Editor.set(editor, params.documentId as string);
-    onChangeDebounced(JSON.stringify(editor.document));
+    if (provider.synced) onChangeDebounced(JSON.stringify(editor.document));
 
     return () => {
       Editor.destroy();
-      onChange(JSON.stringify(editor.document));
+      if (provider.synced) onChange(JSON.stringify(editor.document));
     };
   }, []);
 

@@ -1,18 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 import { useMutation, useQuery } from "convex/react";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo } from "react";
 
 import { api } from "@/convex/_generated/api";
-import { Doc, Id } from "@/convex/_generated/dataModel";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Id } from "@/convex/_generated/dataModel";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 
-import { Spinner } from "@/components/spinner";
 import { DocumentHeader } from "../../../_components/document-header";
 import { EditorSkeleton } from "@/components/editor/editor";
 import { Chat } from "../../../_components/chat";
@@ -20,7 +18,6 @@ import { ArchiveBanner } from "@/app/(main)/_components/archive-banner";
 import { toast } from "sonner";
 import { RoomProvider } from "@/liveblocks.config";
 import { ClientSideSuspense } from "@liveblocks/react";
-import { useHistoryUpdate } from "@/hooks/use-history-update";
 interface DocumentIdPageProps {
   params: {
     documentId: Id<"documents">;
@@ -30,11 +27,8 @@ interface DocumentIdPageProps {
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   const { user } = useUser();
   const router = useRouter();
-  const [initContent, setInitContent] = useState<string | undefined>(undefined);
-  // const historyUpdate = useHistoryUpdate();
 
   const updateContent = useMutation(api.documents.updateDocumentContent);
-  const updateIsOpened = useMutation(api.documents.updateDocumentIsOpened);
   const doc = useQuery(api.documents.getDocumentById, {
     documentId: params.documentId,
   });
@@ -48,7 +42,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
   );
 
   const onChangeContent = (content: string) => {
-    // if (historyUpdate.isUpdating) return;
     const promise = updateContent({
       id: params.documentId,
       content,
@@ -60,22 +53,6 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     //   error: "Failed to save document.",
     // });
   };
-
-  const onOpen = () => {
-    const promise = updateIsOpened({
-      id: params.documentId,
-      isOpened: true,
-    });
-  };
-
-  useEffect(() => {
-    if (doc?.isOpened === false) {
-      setInitContent(doc.content);
-      onOpen();
-    } else {
-      setInitContent(undefined);
-    }
-  }, [doc]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -106,7 +83,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
                 {() => (
                   <Editor
                     onChange={onChangeContent}
-                    initialContent={initContent}
+                    initialContent={doc.content}
                     username={user?.fullName || "Anonymous"}
                     room={doc._id}
                     role={role}
