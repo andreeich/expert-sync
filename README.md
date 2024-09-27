@@ -2,6 +2,8 @@
 
 **ExperSync** is a web-based system designed for expert communication and collaborative file editing. The project provides a seamless experience for multiple users to interact and edit documents in real-time, making it a powerful tool for professionals needing efficient collaboration.
 
+![Document page image](/expertsync-document.jpg)
+
 ## Features
 
 - Real-time collaborative document editing
