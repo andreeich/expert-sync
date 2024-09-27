@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "convex": "bunx convex dev",
-    "socket": "HOST=localhost PORT=1234 bunx y-websocket"
+    "convex": "bunx convex dev"
   },
   "dependencies": {
     "@blocknote/core": "^0.12.4",

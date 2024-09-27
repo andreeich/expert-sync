@@ -18,6 +18,7 @@ import { ArchiveBanner } from "@/app/(main)/_components/archive-banner";
 import { toast } from "sonner";
 import { RoomProvider } from "@/liveblocks.config";
 import { ClientSideSuspense } from "@liveblocks/react";
+
 interface DocumentIdPageProps {
   params: {
     documentId: Id<"documents">;

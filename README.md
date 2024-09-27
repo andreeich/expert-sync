@@ -1,70 +1,68 @@
-# Fullstack Notion Clone: Next.js 13, React, Convex, Tailwind | Full Course 2023
+# ExperSync
 
-![Copy of Copy of Copy of Fullstack Twitter Clone (6)](https://github.com/AntonioErdeljac/notion-clone-tutorial/assets/23248726/66bcfca3-93bf-4aa4-950d-f98c020e1156)
+**ExperSync** is a web-based system designed for expert communication and collaborative file editing. The project provides a seamless experience for multiple users to interact and edit documents in real-time, making it a powerful tool for professionals needing efficient collaboration.
 
-This is a repository for Fullstack Notion Clone: Next.js 13, React, Convex, Tailwind | Full Course 2023
+## Features
 
-[VIDEO TUTORIAL](https://www.youtube.com/watch?v=ZbX4Ok9YX94)
+- Real-time collaborative document editing
+- User authentication and authorization
+- Responsive, intuitive UI built with modern web technologies
+- Secure and scalable backend services
+- Enhanced communication tools for expert collaboration
 
-Key Features:
+## Tech Stack
 
-- Real-time database  🔗
-- Notion-style editor 📝
-- Light and Dark mode 🌓
-- Infinite children documents 🌲
-- Trash can & soft delete 🗑️
-- Authentication 🔐
-- File upload
-- File deletion
-- File replacement
-- Icons for each document (changes in real-time) 🌠
-- Expandable sidebar ➡️🔀⬅️
-- Full mobile responsiveness 📱
-- Publish your document to the web 🌐
-- Fully collapsable sidebar ↕️
-- Landing page 🛬
-- Cover image of each document 🖼️
-- Recover deleted files 🔄📄
+- **Framework**: Next.js (for full-stack application development)
+- **Frontend**: React, JavaScript, TypeScript
+- **Backend**: Convex (cloud-based service)
+- **Authentication**: Clerk
+- **Real-time interaction**: Liveblocks, Yjs
+- **UI Components**: Shadcn/UI
+- **Text Editor**: Blocknotes.js
+- **State Management**: Zustand
+- **Styling**: Tailwind CSS
+- **Data Validation**: Zod
+- **Utilities**: Edgestore, sonner
 
-### Prerequisites
+## Installation
 
-**Node version 18.x.x**
+1. Clone the repository:
 
-### Cloning the repository
+   ```bash
+   git clone https://github.com/your-username/exper-sync.git
+   cd exper-sync
+   ```
 
-```shell
-git clone https://github.com/AntonioErdeljac/notion-clone-tutorial.git
-```
+2. Install dependencies:
 
-### Install packages
+   ```bash
+   npm install
+   ```
 
-```shell
-npm i
-```
+3. Run the Convex development server:
 
-### Setup .env file
+   ```bash
+   npm run convex
+   ```
 
-```js
-# Deployment used by `npx convex dev`
-CONVEX_DEPLOYMENT=
-NEXT_PUBLIC_CONVEX_URL=
+4. Start the development server:
 
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
+   ```bash
+   npm run dev
+   ```
 
-EDGE_STORE_ACCESS_KEY=
-EDGE_STORE_SECRET_KEY=
-```
+## Scripts
 
-### Setup Convex
+- **dev**: Start the development server.
+- **build**: Create a production build.
+- **start**: Start the application in production mode.
+- **lint**: Run linter to check code quality.
+- **convex**: Run the Convex server for real-time collaboration features.
 
-```shell
-npx convex dev
+## Contributing
 
-```
+Contributions are welcome! Please open an issue or submit a pull request for any changes or enhancements.
 
-### Start the app
+## License
 
-```shell
-npm run dev
-```
+This project is licensed under the MIT License.
